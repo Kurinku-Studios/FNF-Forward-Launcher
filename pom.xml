@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>FNF Forward Launcher</artifactId>
+    <artifactId>FNFForwardLauncher</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
@@ -15,21 +15,16 @@
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx</artifactId>
+            <artifactId>javafx-controls</artifactId>
             <version>16</version>
             <type>pom</type>
         </dependency>
     </dependencies>
     <build>
-        <plugins>
-            <plugin>
-                <groupId>org.openjfx</groupId>
-                <artifactId>javafx-maven-plugin</artifactId>
-                <version>0.0.6</version>
-                <configuration>
-                    <mainClass>ForwardLauncher</mainClass>
-                </configuration>
-            </plugin>
-        </plugins>
+        <plugins><plugin>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>0.0.6</version>
+        </plugin></plugins>
     </build>
 </project>
