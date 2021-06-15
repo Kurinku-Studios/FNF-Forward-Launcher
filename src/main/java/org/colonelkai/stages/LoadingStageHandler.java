@@ -16,12 +16,13 @@ public class LoadingStageHandler {
         primaryStage.setResizable(false);
         primaryStage.initStyle(StageStyle.UNDECORATED);
 
-        ImageView imageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("logo.png")));
+        ImageView imageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/logo.png")));
         imageView.setX(50);
         imageView.setY(25);
 
         imageView.setFitHeight(100);
         imageView.setFitWidth(25);
+
         imageView.setPreserveRatio(true);
 
         Group root = new Group(imageView);
