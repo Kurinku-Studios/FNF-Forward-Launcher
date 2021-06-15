@@ -14,6 +14,4 @@ public class ForwardLauncher extends Application {
     public static void main(String[] args) {
         ForwardLauncher.launch(args);
     }
-
-
 }
