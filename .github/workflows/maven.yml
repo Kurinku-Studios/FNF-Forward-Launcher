@@ -5,7 +5,7 @@ name: Raw Jar
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, actions ]
   pull_request:
     branches: [ main ]
   workflow_dispatch:
@@ -27,4 +27,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: Jar
-        path: target/*.jar
+        path: target/FNFForward*.jar
