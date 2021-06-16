@@ -41,4 +41,4 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: windows exe installer
-        path: ./FNF-Forward-Launcher.exe
+        path: ./FNF-Forward-Launcher*.exe
