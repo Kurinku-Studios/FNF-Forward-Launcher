@@ -9,11 +9,10 @@ import java.util.Optional;
 public class Mod {
     private String modID;
     private String modName;
-    private String modVersion;
     private String modDescription;
 
+    private long modVersion;
     private long bytesToDownload;
-    private long modNumericalVersion;
 
     private URL downloadURL;
     private URL iconURL;
@@ -24,12 +23,11 @@ public class Mod {
 
     private File localDir;
 
-    public Mod(String modID, String modName, String modVersion, String modDescription, long bytesToDownload, long modNumericalVersion,
+    public Mod(String modID, String modName, String modDescription,  long modVersion, long bytesToDownload,
                URL downloadURL, URL iconURL, URL bgPictureURL) {
         this.modID = modID;
         this.modName = modName;
         this.modVersion = modVersion;
-        this.modNumericalVersion = modNumericalVersion;
         this.modDescription = modDescription;
         this.bytesToDownload = bytesToDownload;
         this.downloadURL = downloadURL;
@@ -37,7 +35,7 @@ public class Mod {
         this.bgPictureURL = bgPictureURL;
     }
 
-    public Mod(String modID, String modName, String modVersion) {
+    public Mod(String modID, String modName, long modVersion) {
         this.modID = modID;
         this.modName = modName;
         this.modVersion = modVersion;
@@ -57,10 +55,10 @@ public class Mod {
         this.modName = modName;
     }
 
-    public String getModVersion() {
+    public long getModVersion() {
         return modVersion;
     }
-    public void setModVersion(String modVersion) {
+    public void setModVersion(long modVersion) {
         this.modVersion = modVersion;
     }
 

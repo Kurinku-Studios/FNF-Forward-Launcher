@@ -14,8 +14,10 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.mod.Mods;
+import org.colonelkai.mod.network.ModDownloader;
 import org.colonelkai.mod.network.ReferenceTableHandler;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -94,8 +96,26 @@ public class LoadingStageHandler {
 
         // Do loading stuff here
 
+        loadingText.setText("Updating Local Data Repository...");
+        //todo
+
         loadingText.setText("Loading mods...");
         Mods.MOD_SET.clear();
         Mods.MOD_SET.addAll(ReferenceTableHandler.getAllMods());
+
+        loadingText.setText("DEBUG: Downloading all non-existent mods...");
+        new Thread(()-> {
+            Mods.MOD_SET.forEach(mod -> {
+                try {
+                    ModDownloader.downloadMod(mod);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }).start();
+        loadingText.setText("Done!");
+
+
+
     }
 }

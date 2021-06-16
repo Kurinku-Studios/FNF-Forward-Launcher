@@ -11,9 +11,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URL;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 public class ReferenceTableHandler {
@@ -38,10 +36,9 @@ public class ReferenceTableHandler {
                 Mod mod = new Mod(
                         modID,
                         (String) jsonModObject.get("modName"),
-                        (String) jsonModObject.get("modVersion"),
                         (String) jsonModObject.get("modDescription"),
+                        (long) jsonModObject.get("modVersion"),
                         (long) jsonModObject.get("bytesToDownload"),
-                        (long) jsonModObject.get("modNumericalVersion"),
                         new URL((String) jsonModObject.get("downloadURL")),
                         new URL((String) jsonModObject.get("iconURL")),
                         new URL((String) jsonModObject.get("bgPictureURL"))
