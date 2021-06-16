@@ -1,7 +1,10 @@
 package org.colonelkai.mod;
 
+import javax.swing.text.html.Option;
 import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
+import java.util.Optional;
 
 public class Mod {
     private String modID;
@@ -9,18 +12,22 @@ public class Mod {
     private String modVersion;
     private String modDescription;
 
-    private boolean isInstalled;
     private long bytesToDownload;
 
     private URL downloadURL;
     private URL iconURL;
     private URL bgPictureURL;
 
-    private File cachedIcon;
-    private File cachedBGPicture;
+    private InputStream cachedIcon;
+    private InputStream cachedBGPicture;
+
     private File localDir;
 
-
+    public Mod(String modID, String modName, String modVersion) {
+        this.modID = modID;
+        this.modName = modName;
+        this.modVersion = modVersion;
+    }
 
     public String getModID() {
         return modID;
@@ -48,13 +55,6 @@ public class Mod {
     }
     public void setModDescription(String modDescription) {
         this.modDescription = modDescription;
-    }
-
-    public boolean isInstalled() {
-        return isInstalled;
-    }
-    public void setInstalled(boolean installed) {
-        isInstalled = installed;
     }
 
     public long getBytesToDownload() {
@@ -85,17 +85,17 @@ public class Mod {
         this.bgPictureURL = bgPictureURL;
     }
 
-    public File getCachedIcon() {
-        return cachedIcon;
+    public Optional<InputStream> getCachedIcon() {
+        return Optional.ofNullable(cachedIcon);
     }
-    public void setCachedIcon(File cachedIcon) {
+    public void setCachedIcon(InputStream cachedIcon) {
         this.cachedIcon = cachedIcon;
     }
 
-    public File getCachedBGPicture() {
-        return cachedBGPicture;
+    public Optional<InputStream> getCachedBGPicture() {
+        return Optional.ofNullable(cachedBGPicture);
     }
-    public void setCachedBGPicture(File cachedBGPicture) {
+    public void setCachedBGPicture(InputStream cachedBGPicture) {
         this.cachedBGPicture = cachedBGPicture;
     }
 

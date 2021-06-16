@@ -19,21 +19,38 @@ import java.util.concurrent.TimeUnit;
 
 public class LoadingStageHandler {
 
-    public static void init(Stage primaryStage) {
-        primaryStage.setResizable(false);
-        primaryStage.initStyle(StageStyle.UNDECORATED);
-        primaryStage.initStyle(StageStyle.TRANSPARENT);
+    private static Label createLoading() {
+        Label loadingText = new Label("Starting FNF: Forward Launcher...");
+        loadingText.setFont(Font.font("Helvetica", FontPosture.ITALIC, 12));
+        loadingText.setTextFill(Color.WHITE);
+        loadingText.setLayoutX(175);
+        loadingText.setLayoutY(67.5);
 
-        // mmm rectangl
+        return loadingText;
+    }
+
+    private static Label createCredit() {
+        Label creditText = new Label("by ColonelKai");
+        creditText.setFont(Font.font("Helvetica", FontPosture.ITALIC, 10));
+        creditText.setTextFill(Color.LIGHTGRAY);
+        creditText.setLayoutX(49);
+        creditText.setLayoutY(100);
+
+        return creditText;
+    }
+
+    private static Rectangle createRect() {
         Rectangle rect = new Rectangle(400,150);
         rect.setFill(Color.rgb(100, 0, 0));
         rect.setArcHeight(10.0);
         rect.setArcWidth(10.0);
 
-        Group group = new Group(rect);
+        return rect;
+    }
 
-        // Putting the logo
-        ImageView imageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/logo.png")));
+    private static ImageView createLogo() {
+        ImageView imageView = new ImageView(new Image(
+                Objects.requireNonNull(ForwardLauncher.class.getResourceAsStream("/logo.png"))));
         imageView.setX(20);
         imageView.setY(30);
 
@@ -42,34 +59,29 @@ public class LoadingStageHandler {
 
         imageView.setPreserveRatio(true);
 
-        group.getChildren().add(imageView);
+        return imageView;
+    }
 
-        // Putting the credit :)
-        Label creditText = new Label("by ColonelKai");
-        creditText.setFont(Font.font("Helvetica", FontPosture.ITALIC, 10));
-        creditText.setTextFill(Color.LIGHTGRAY);
-        creditText.setLayoutX(49);
-        creditText.setLayoutY(100);
-
-        group.getChildren().add(creditText);
-
-        // Putting the "loading..." text
-
-        Label loadingText = new Label("Starting FNF: Forward Launcher...");
-        loadingText.setFont(Font.font("Helvetica", FontPosture.ITALIC, 12));
-        loadingText.setTextFill(Color.WHITE);
-        loadingText.setLayoutX(175);
-        loadingText.setLayoutY(67.5);
-
-        group.getChildren().add(loadingText);
+    private static Scene createLoadingScene(Group group) {
         Scene loadingScene = new Scene(group);
-
-        //loadingScene.setFill(Color.rgb(100, 0, 0));
         loadingScene.setFill(Color.TRANSPARENT);
-        loadingScene.getStylesheets().add(
-                Objects.requireNonNull(ForwardLauncher.class.getResource("/stylesheets/LoadingScreen.css"))
-                        .toExternalForm()
-        );
+
+        return loadingScene;
+    }
+
+    public static void init(Stage primaryStage) {
+        primaryStage.setResizable(false);
+        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+
+        Group group = new Group(createRect());
+        group.getChildren().add(createLogo());
+        group.getChildren().add(createCredit());
+
+        Label loadingText = createLoading(); // we need this here as it will be modified later on
+        group.getChildren().add(loadingText);
+
+        Scene loadingScene = createLoadingScene(group);
 
         primaryStage.setWidth(400);
         primaryStage.setHeight(150);
