@@ -1,12 +1,19 @@
 package org.colonelkai.mod.network;
 
 import org.colonelkai.mod.Mod;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.net.URL;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 public class ReferenceTableHandler {
@@ -14,11 +21,43 @@ public class ReferenceTableHandler {
 
     public static Set<Mod> getAllMods() {
         File jsonFilePath = new File(System.getenv("APPDATA") + File.separator + "ForwardLauncher"
-        + "referencetable.json");
+        + File.separator + "FLauncherData" + File.separator + "referencetable.json");
 
+        JSONParser parser = new JSONParser();
+        Set<Mod> mods = new HashSet<>();
 
+        try(Reader reader = new FileReader(jsonFilePath)){
 
-        return Collections.emptySet();
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
+
+            JSONArray modsJsonArray = (JSONArray) jsonObject.get("modlist");
+
+            for (String modID : (Iterable<String>) modsJsonArray) {
+                JSONObject jsonModObject = (JSONObject) jsonObject.get(modID);
+
+                Mod mod = new Mod(
+                        modID,
+                        (String) jsonModObject.get("modName"),
+                        (String) jsonModObject.get("modVersion"),
+                        (String) jsonModObject.get("modDescription"),
+                        (long) jsonModObject.get("bytesToDownload"),
+                        (long) jsonModObject.get("modNumericalVersion"),
+                        new URL((String) jsonModObject.get("downloadURL")),
+                        new URL((String) jsonModObject.get("iconURL")),
+                        new URL((String) jsonModObject.get("bgPictureURL"))
+                );
+
+                mods.add(mod);
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return mods;
     }
 
 }

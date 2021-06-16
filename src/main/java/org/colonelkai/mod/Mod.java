@@ -13,6 +13,7 @@ public class Mod {
     private String modDescription;
 
     private long bytesToDownload;
+    private long modNumericalVersion;
 
     private URL downloadURL;
     private URL iconURL;
@@ -22,6 +23,19 @@ public class Mod {
     private InputStream cachedBGPicture;
 
     private File localDir;
+
+    public Mod(String modID, String modName, String modVersion, String modDescription, long bytesToDownload, long modNumericalVersion,
+               URL downloadURL, URL iconURL, URL bgPictureURL) {
+        this.modID = modID;
+        this.modName = modName;
+        this.modVersion = modVersion;
+        this.modNumericalVersion = modNumericalVersion;
+        this.modDescription = modDescription;
+        this.bytesToDownload = bytesToDownload;
+        this.downloadURL = downloadURL;
+        this.iconURL = iconURL;
+        this.bgPictureURL = bgPictureURL;
+    }
 
     public Mod(String modID, String modName, String modVersion) {
         this.modID = modID;

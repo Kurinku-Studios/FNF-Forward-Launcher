@@ -13,6 +13,8 @@ import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.mod.Mods;
+import org.colonelkai.mod.network.ReferenceTableHandler;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -92,5 +94,8 @@ public class LoadingStageHandler {
 
         // Do loading stuff here
 
+        loadingText.setText("Loading mods...");
+        Mods.MOD_SET.clear();
+        Mods.MOD_SET.addAll(ReferenceTableHandler.getAllMods());
     }
 }
