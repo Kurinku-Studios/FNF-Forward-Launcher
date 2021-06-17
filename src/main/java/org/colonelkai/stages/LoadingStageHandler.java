@@ -1,6 +1,7 @@
 package org.colonelkai.stages;
 
 
+import javafx.concurrent.Task;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -13,12 +14,14 @@ import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.mod.Mod;
 import org.colonelkai.mod.Mods;
 import org.colonelkai.mod.network.ModDownloader;
 import org.colonelkai.mod.network.ReferenceTableHandler;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class LoadingStageHandler {
@@ -99,21 +102,17 @@ public class LoadingStageHandler {
         loadingText.setText("Updating Local Data Repository...");
         //todo
 
-        loadingText.setText("Loading mods...");
-        Mods.MOD_SET.clear();
-        Mods.MOD_SET.addAll(ReferenceTableHandler.getAllMods());
+        loadingText.setText("Loading mod data...");
+        Set<Mod> oldModSet = ReferenceTableHandler.getAllMods();
+        try {
+            ReferenceTableHandler.updateReferenceTable();
+        } catch (IOException e) {
+            e.printStackTrace();
+            loadingText.setText("!!! Error getting latest mod data. !!!");
+        }
+        Set<Mod> newModSet = ReferenceTableHandler.getAllMods();
 
-        loadingText.setText("DEBUG: Downloading all non-existent mods...");
-        new Thread(()-> {
-            Mods.MOD_SET.forEach(mod -> {
-                try {
-                    ModDownloader.downloadMod(mod);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            });
-        }).start();
-        loadingText.setText("Done!");
+
 
 
 

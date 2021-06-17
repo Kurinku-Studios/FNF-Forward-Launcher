@@ -1,29 +1,67 @@
 package org.colonelkai.mod.network;
 
+import javafx.concurrent.Task;
+import javafx.scene.control.Label;
 import org.colonelkai.mod.Mod;
 
+import javax.lang.model.type.NullType;
 import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Optional;
+import java.util.Set;
 import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
+
 
 public class ModDownloader {
     // will do what it says, retrieve a mod from a specified repo.
 
-    private static final String FLAUNCHER_DATA_PATH = System.getenv("APPDATA") + File.separator +
-            "ForwardLauncher" + File.separator +
-            "FLauncherData" + File.separator;
+    private static void updateAfterCompare(Mod oldMod, Mod newMod) {
+        if(newMod.getModVersion() > oldMod.getModVersion()) {
+            oldMod.deleteMod();
+            try {
+                ModDownloader.downloadMod(newMod);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void updateAllMods(Set<Mod> oldModSet, Set<Mod> newModSet, Label loadingLabel) {
+        // NOTE: "old mod" means a mod object that has data that has not been made from the newest data that has been
+        // pulled from central repo. "new mod" means the exact opposite, as in, it has the up-to-date data.
+
+        HashMap<Mod, Mod> toBeUpdated = new HashMap<>();
+
+        oldModSet
+                .parallelStream()
+                .forEach( oldMod -> { // for every old mod
+                    Optional<Mod> matchingNewMod = newModSet.parallelStream() // try to find a matching new mod
+                            .filter(newMod -> newMod.getModID().equals(oldMod.getModID()))
+                            .findAny();
+                    if(matchingNewMod.isPresent()) {
+                        // download mod if matched one found
+                        loadingLabel.setText("Updating mod: "+oldMod.getModName());
+                        toBeUpdated.put(oldMod, matchingNewMod.get());
+
+                    };
+                    // I am aware if there is no matching new mod, the old mod will just be deleted. It is intentional.
+                    // This ensures if a mod is removed from the central repo, it is deleted from the launcher :)
+                });
+
+
+    }
 
     private static void downloadZip(Mod mod) throws IOException {
         // download mod itself
         URL downloadURL = mod.getDownloadURL();
         ReadableByteChannel readChannel = Channels.newChannel(downloadURL.openStream());
         FileOutputStream fileOS = new FileOutputStream(
-                        FLAUNCHER_DATA_PATH +
+                        Values.FLAUNCHER_DATA_PATH +
                         mod.getModID() + File.separator +
                         mod.getModID() + ".zip"
         );
@@ -37,7 +75,7 @@ public class ModDownloader {
         URL downloadURL = mod.getIconURL();
         ReadableByteChannel readChannel = Channels.newChannel(downloadURL.openStream());
         FileOutputStream fileOS = new FileOutputStream(
-                        FLAUNCHER_DATA_PATH +
+                        Values.FLAUNCHER_DATA_PATH +
                         mod.getModID() + File.separator +
                         "icon.png"
         );
@@ -51,7 +89,7 @@ public class ModDownloader {
         URL downloadURL = mod.getIconURL();
         ReadableByteChannel readChannel = Channels.newChannel(downloadURL.openStream());
         FileOutputStream fileOS = new FileOutputStream(
-                        FLAUNCHER_DATA_PATH +
+                        Values.FLAUNCHER_DATA_PATH +
                         mod.getModID() + File.separator +
                         "bg.png"
         );
@@ -61,7 +99,7 @@ public class ModDownloader {
     }
 
     public static void downloadMod(Mod mod) throws IOException {
-        File mainDir = new File(FLAUNCHER_DATA_PATH+mod.getModID());
+        File mainDir = new File(Values.FLAUNCHER_DATA_PATH+mod.getModID());
         mainDir.mkdir();
 
         downloadZip(mod);
@@ -70,12 +108,12 @@ public class ModDownloader {
 
        // unzip main mod and delete zip
         File zipFile = new File(
-                        FLAUNCHER_DATA_PATH +
+                        Values.FLAUNCHER_DATA_PATH +
                         mod.getModID() + File.separator +
                         mod.getModID() + ".zip"
         );
 
-        File destDir = new File(FLAUNCHER_DATA_PATH + mod.getModID() + File.separator + "source");
+        File destDir = new File(Values.FLAUNCHER_DATA_PATH + mod.getModID() + File.separator + "source");
         if(!(destDir.getParentFile().exists())) destDir.getParentFile().mkdir();
         destDir.mkdir();
 

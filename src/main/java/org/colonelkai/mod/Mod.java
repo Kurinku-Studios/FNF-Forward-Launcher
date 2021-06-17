@@ -1,9 +1,16 @@
 package org.colonelkai.mod;
 
+import org.colonelkai.mod.network.ModDownloader;
+import org.colonelkai.mod.network.Values;
+
 import javax.swing.text.html.Option;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class Mod {
@@ -39,6 +46,21 @@ public class Mod {
         this.modID = modID;
         this.modName = modName;
         this.modVersion = modVersion;
+    }
+
+    public boolean isInstalled() {
+        return new File(Values.FLAUNCHER_DATA_PATH + modID).exists();
+    }
+
+    public void deleteMod() {
+        try {
+            Files.walk(Path.of(Values.FLAUNCHER_DATA_PATH + modID))
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getModID() {
