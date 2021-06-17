@@ -34,8 +34,6 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- adding all the platform libs only adds a couple more MB -->
-
         <dependency>
             <groupId>com.googlecode.json-simple</groupId>
             <artifactId>json-simple</artifactId>
