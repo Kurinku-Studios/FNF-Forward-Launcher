@@ -1,10 +1,9 @@
 package org.colonelkai.mod;
 
-import org.colonelkai.mod.network.ModDownloader;
 import org.colonelkai.mod.network.Values;
 
-import javax.swing.text.html.Option;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -49,14 +48,17 @@ public class Mod {
     }
 
     public boolean isInstalled() {
-        return new File(Values.FLAUNCHER_DATA_PATH + modID).exists();
+        File[] files = new File(Values.FLAUNCHER_DATA_PATH + modID)
+                .listFiles(File::isFile);
+        return files != null && files.length != 0;
     }
 
     public void deleteMod() {
         try {
             Files.walk(Path.of(Values.FLAUNCHER_DATA_PATH + modID))
-                    .sorted(Comparator.reverseOrder())
                     .map(Path::toFile)
+                    .filter(File::exists)
+                    .sorted(Comparator.reverseOrder())
                     .forEach(File::delete);
         } catch (IOException e) {
             e.printStackTrace();
