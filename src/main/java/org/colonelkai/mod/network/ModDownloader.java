@@ -39,7 +39,7 @@ public class ModDownloader {
         return oldMod.getModVersion() < newMod.getModVersion();
     }
 
-    private static void updateMods(Collection<Mod> oldMods, Collection<Mod> newMods) {
+    public static void updateMods(Collection<Mod> oldMods, Collection<Mod> newMods) {
         oldMods.parallelStream().forEach(m -> {
             try {
                 updateMod(m, newMods);
@@ -51,11 +51,14 @@ public class ModDownloader {
 
     private static void updateMod(Mod mod, Collection<Mod> mods) throws IOException {
         Optional<Mod> opNewMod = mods.parallelStream().filter(m -> m.getModID().equals(mod.getModID())).findAny();
-        if (opNewMod.isEmpty() || !requiresUpdate(mod, opNewMod.get())) {
-            return;
-        }
-        downloadModAsynced(opNewMod.get());
 
+        if( (opNewMod.isEmpty() || requiresUpdate(mod, opNewMod.get())) && mod.isInstalled())  {
+            mod.deleteMod();
+
+            if(opNewMod.isPresent()) {
+                downloadModAsynced(opNewMod.get());
+            }
+        }
     }
 
     @Deprecated
@@ -90,13 +93,12 @@ public class ModDownloader {
     }
 
     private static DownloadTask<File> downloadZipAsynced(Mod mod) throws IOException {
-        return downloadAsynced(mod, mod.getModID() + ".zip");
+        return downloadAsynced(mod, mod.getDownloadURL(), mod.getModID() + ".zip");
     }
 
-    private static DownloadTask<File> downloadAsynced(Mod mod, String target) throws IOException {
-        URL downloadUrl = mod.getDownloadURL();
-        File downloadTo = new File(getFilePath(mod), mod.getModID() + ".zip");
-        return DownloadTask.of(downloadUrl, downloadTo, (os) -> downloadTo);
+    private static DownloadTask<File> downloadAsynced(Mod mod, URL url, String target) throws IOException {
+        File downloadTo = new File(getFilePath(mod), target);
+        return DownloadTask.of(url, downloadTo, (os) -> downloadTo);
     }
 
     @Deprecated
@@ -115,7 +117,7 @@ public class ModDownloader {
     }
 
     private static DownloadTask<File> downloadIconAsynced(Mod mod) throws IOException {
-        return downloadAsynced(mod, "icon.png");
+        return downloadAsynced(mod, mod.getIconURL(), "icon.png");
     }
 
     @Deprecated
@@ -134,7 +136,7 @@ public class ModDownloader {
     }
 
     private static DownloadTask<File> downloadBigPictureAsynced(Mod mod) throws IOException {
-        return downloadAsynced(mod, "bg.png");
+        return downloadAsynced(mod, mod.getBgPictureURL(), "bg.png");
     }
 
     @Deprecated
@@ -153,7 +155,7 @@ public class ModDownloader {
     }
 
     public static void downloadModAsynced(Mod mod) throws IOException {
-        File mainDir = getFilePath(mod);
+        File mainDir = getFilePath(mod);    
         Files.createDirectories(mainDir.toPath());
         DownloadTask<File> zipDownload = downloadZipAsynced(mod);
         zipDownload.onComplete(zipFile -> {

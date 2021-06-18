@@ -100,7 +100,6 @@ public class LoadingStageHandler {
         // Do loading stuff here
 
         loadingText.setText("Updating Local Data Repository...");
-        //todo
 
         loadingText.setText("Loading mod data...");
         Set<Mod> oldModSet = ReferenceTableHandler.getAllMods();
@@ -109,12 +108,20 @@ public class LoadingStageHandler {
         } catch (IOException e) {
             e.printStackTrace();
             loadingText.setText("!!! Error getting latest mod data. !!!");
+            return;
         }
+        loadingText.setText("Fetched latest mod data.");
         Set<Mod> newModSet = ReferenceTableHandler.getAllMods();
 
+        loadingText.setText("Updating outdated mods...");
+        ModDownloader.updateMods(oldModSet, newModSet);
+        loadingText.setText("Updated outdated mods.");
 
+        // end of loading
 
-
+        Mods.MOD_SET.clear();
+        Mods.MOD_SET.addAll(newModSet);
+        primaryStage.hide();
 
     }
 }
