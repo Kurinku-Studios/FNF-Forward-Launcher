@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Debug" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="org.colonelkai.StandAloneLauncher" />
+    <module name="FNFForwardLauncher" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
