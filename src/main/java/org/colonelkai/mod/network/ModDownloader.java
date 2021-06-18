@@ -52,7 +52,7 @@ public class ModDownloader {
     private static void updateMod(Mod mod, Collection<Mod> mods) throws IOException {
         Optional<Mod> opNewMod = mods.parallelStream().filter(m -> m.getModID().equals(mod.getModID())).findAny();
 
-        if( (opNewMod.isEmpty() || requiresUpdate(mod, opNewMod.get())) && mod.isInstalled())  {
+        if(!mod.isInstalled() || opNewMod.isEmpty() || requiresUpdate(mod, opNewMod.get()))  {
             mod.deleteMod();
 
             if(opNewMod.isPresent()) {
