@@ -16,6 +16,7 @@ public class Mod {
     private String modID;
     private String modName;
     private String modDescription;
+    private String modDev;
 
     private long modVersion;
     private long bytesToDownload;
@@ -29,16 +30,25 @@ public class Mod {
 
     private File localDir;
 
-    public Mod(String modID, String modName, String modDescription,  long modVersion, long bytesToDownload,
+    public Mod(String modID, String modName, String modDescription, String ModDev,  long modVersion, long bytesToDownload,
                URL downloadURL, URL iconURL, URL bgPictureURL) {
         this.modID = modID;
         this.modName = modName;
+        this.modDev = modDev;
         this.modVersion = modVersion;
         this.modDescription = modDescription;
         this.bytesToDownload = bytesToDownload;
         this.downloadURL = downloadURL;
         this.iconURL = iconURL;
         this.bgPictureURL = bgPictureURL;
+    }
+
+    public String getModDev() {
+        return modDev;
+    }
+
+    public void setModDev(String modDev) {
+        this.modDev = modDev;
     }
 
     public Mod(String modID, String modName, long modVersion) {
