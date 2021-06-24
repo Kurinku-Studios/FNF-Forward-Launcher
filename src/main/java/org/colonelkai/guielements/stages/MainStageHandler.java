@@ -5,8 +5,11 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.guielements.nodes.modlist.ModBox;
+import org.colonelkai.mod.Mods;
 
 import java.util.Objects;
 
@@ -25,7 +28,9 @@ public class MainStageHandler {
 
         root.setBackground(background);
 
+
         return new Scene(root);
+
     }
 
     private static void setupStage(Stage stage) {
@@ -43,9 +48,17 @@ public class MainStageHandler {
         setupStage(stage);
         stage.show();
 
-        Pane root = new Pane();
-        Scene scene = createScene(root);
 
+        // todo remove all this once done testing exampleModBox
+        ModBox exampleModBox = new ModBox(Mods.MOD_SET.stream().findAny().get());
+        exampleModBox.update();
+
+        Pane root = new Pane(exampleModBox);
+
+        root.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, null, null)));
+
+        Scene scene = createScene(root);
+        scene.setFill(Color.DARKGRAY);
         stage.setScene(scene);
     }
 }

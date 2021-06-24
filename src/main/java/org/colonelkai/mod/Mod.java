@@ -30,7 +30,7 @@ public class Mod {
 
     private File localDir;
 
-    public Mod(String modID, String modName, String modDescription, String ModDev,  long modVersion, long bytesToDownload,
+    public Mod(String modID, String modName, String modDescription, String modDev,  long modVersion, long bytesToDownload,
                URL downloadURL, URL iconURL, URL bgPictureURL) {
         this.modID = modID;
         this.modName = modName;
@@ -43,18 +43,16 @@ public class Mod {
         this.bgPictureURL = bgPictureURL;
     }
 
-    public String getModDev() {
-        return modDev;
-    }
-
-    public void setModDev(String modDev) {
-        this.modDev = modDev;
-    }
 
     public Mod(String modID, String modName, long modVersion) {
         this.modID = modID;
         this.modName = modName;
         this.modVersion = modVersion;
+    }
+
+    public void run() {
+        System.out.println("run mod lol "+modName);
+        // todo this.
     }
 
     public boolean isInstalled() {
@@ -73,6 +71,13 @@ public class Mod {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getModDev() {
+        return modDev;
+    }
+    public void setModDev(String modDev) {
+        this.modDev = modDev;
     }
 
     public String getModID() {
