@@ -3,8 +3,6 @@ package org.colonelkai.guielements.nodes.modlist;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;

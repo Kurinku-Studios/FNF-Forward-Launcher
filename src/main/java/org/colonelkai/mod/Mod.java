@@ -17,6 +17,7 @@ public class Mod {
     private String modName;
     private String modDescription;
     private String modDev;
+    private String execPath;
 
     private long modVersion;
     private long bytesToDownload;
@@ -30,13 +31,14 @@ public class Mod {
 
     private File localDir;
 
-    public Mod(String modID, String modName, String modDescription, String modDev,  long modVersion, long bytesToDownload,
+    public Mod(String modID, String modName, String modDescription, String modDev, String execPath,  long modVersion, long bytesToDownload,
                URL downloadURL, URL iconURL, URL bgPictureURL) {
         this.modID = modID;
         this.modName = modName;
         this.modDev = modDev;
         this.modVersion = modVersion;
         this.modDescription = modDescription;
+        this.execPath = execPath;
         this.bytesToDownload = bytesToDownload;
         this.downloadURL = downloadURL;
         this.iconURL = iconURL;
@@ -51,8 +53,16 @@ public class Mod {
     }
 
     public void run() {
-        System.out.println("run mod lol "+modName);
-        // todo this.
+        try {
+            Runtime.getRuntime().exec(
+                    Values.FLAUNCHER_DATA_PATH +this.getModID()+File.separator+ "source"
+                                                                + File.separator + this.execPath,
+                    null,
+                    new File(Values.FLAUNCHER_DATA_PATH+this.getModID()+File.separator+ "source")
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isInstalled() {
