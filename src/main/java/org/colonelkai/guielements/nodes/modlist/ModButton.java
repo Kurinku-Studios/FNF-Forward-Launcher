@@ -2,10 +2,14 @@ package org.colonelkai.guielements.nodes.modlist;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Side;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.guielements.window.ModViewBox;
 import org.colonelkai.mod.Mod;
 
 public class ModButton extends HBox {
@@ -35,14 +39,51 @@ public class ModButton extends HBox {
                     mod.run();
                 }
             });
+        this.getChildren().add(execButton);
+
+        // Dropdown menu
+        Button miscButton = new Button("\u25BC");
+        this.getChildren().add(miscButton);
+
+        ContextMenu miscOptions = new ContextMenu();
+
+        MenuItem uninstall = new MenuItem("Uninstall");
+        uninstall.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                mod.deleteMod();
+            }
+        });
+
+        MenuItem seeMore = new MenuItem("See More");
+        seeMore.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                new ModViewBox(mod).display();
+            }
+        });
+
+        miscOptions.getItems().addAll(uninstall, seeMore);
+
+        miscButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                miscOptions.show(miscButton, Side.BOTTOM, 0, 0);
+            }
+        });
 
         } else { // if the mod isn't installed, simply make the execButton say "See More" that launches the big mod screen.
             execButton = new Button("See More");
-
+            execButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    new ModViewBox(mod).display();
+                }
+            });
+            this.getChildren().add(execButton);
         }
 
         execButton.setFont(font);
 
-        this.getChildren().add(execButton);
     }
 }

@@ -3,7 +3,6 @@ package org.colonelkai.mod;
 import org.colonelkai.mod.network.Values;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
