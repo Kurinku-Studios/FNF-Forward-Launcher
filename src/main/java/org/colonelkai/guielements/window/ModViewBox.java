@@ -1,20 +1,29 @@
 package org.colonelkai.guielements.window;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.mod.Mod;
+import org.colonelkai.mod.network.ModDownloader;
 import org.colonelkai.mod.network.Values;
 
+import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,7 +36,7 @@ public class ModViewBox {
 
     /*
     This is a popup window that shows the Icon, have a background and the description of the mod.
-    This is where you download a mod if it isnt downloaded, or if it is, uninstall it.
+    This is where you download a mod if it isn't downloaded, or if it is, uninstall it.
 
     I know mose is going to kill me for putting this many shit into this single file, but fuck it, most of this don't
     deserve their own class :)
@@ -94,15 +103,17 @@ public class ModViewBox {
     }
 
     public VBox getRightSide() {
-        VBox vbox = new VBox();
+        VBox vbox = new VBox(15);
         vbox.setAlignment(Pos.CENTER_RIGHT);
 
         vbox.setBackground(new Background(
-                new BackgroundFill(Color.rgb(220,220,220, 0.5), null, null)
+                new BackgroundFill(Color.rgb(220,220,220, 0.8), null, null)
         ));
 
         Label title = new Label(mod.getModName());
         title.setFont(fontBig);
+        title.setAlignment(Pos.CENTER);
+        title.setContentDisplay(ContentDisplay.TOP);
         vbox.getChildren().add(title);
 
         String description = mod.getModDescription();
@@ -115,6 +126,7 @@ public class ModViewBox {
         long maxCharactersBeforeNewline = 20;
         long counter = 0;
 
+        // couldn't do a lambda, feeling sad today
         for (String string : descStringList) {
             counter += string.length();
             if (counter > maxCharactersBeforeNewline) {
@@ -128,9 +140,51 @@ public class ModViewBox {
 
         Label descLabel = new Label(finalDescString);
         descLabel.setFont(font);
+        descLabel.setAlignment(Pos.CENTER);
         vbox.getChildren().add(descLabel);
+        vbox.getChildren().add(getPlayButton());
+
+        vbox.setPadding(new Insets(5));
 
         return vbox;
+    }
+
+    public HBox getPlayButton() {
+        HBox hbox = new HBox();
+        if(mod.isInstalled()) {
+            Button launchButton = new Button("Launch");
+            launchButton.setFont(font);
+            launchButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    mod.run();
+                    window.hide();
+                }
+            });
+            hbox.getChildren().add(launchButton);
+        } else {
+            Button downloadButton = new Button();
+            ImageView buttonImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/Download.png")));
+            buttonImageView.setFitWidth(150);
+            buttonImageView.setFitHeight(75);
+            buttonImageView.setPreserveRatio(true);
+            downloadButton.setGraphic(buttonImageView);
+            downloadButton.setStyle("-fx-background-color: transparent;");
+            downloadButton.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent actionEvent) {
+                    try {
+                        ModDownloader.downloadModAsynced(mod);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    window.hide();
+                }
+            });
+            hbox.getChildren().add(downloadButton);
+        }
+        hbox.setAlignment(Pos.BOTTOM_CENTER);
+        return hbox;
     }
 
     public void display() {

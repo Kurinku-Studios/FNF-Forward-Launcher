@@ -52,7 +52,10 @@ public class ModDownloader {
     private static void updateMod(Mod mod, Collection<Mod> mods) throws IOException {
         Optional<Mod> opNewMod = mods.parallelStream().filter(m -> m.getModID().equals(mod.getModID())).findAny();
 
-        if(!mod.isInstalled() || opNewMod.isEmpty() || requiresUpdate(mod, opNewMod.get()))  {
+
+        // today i spent 2 hours looking for a bug only to realize i did !mod.isInstalled() instead of mod.isInstalled()
+        // why
+        if(mod.isInstalled() || opNewMod.isEmpty() || requiresUpdate(mod, opNewMod.get()))  {
             mod.deleteMod();
 
             if(opNewMod.isPresent()) {

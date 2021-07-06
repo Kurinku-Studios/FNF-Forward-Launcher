@@ -6,6 +6,8 @@ import javafx.geometry.Side;
 import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
@@ -32,14 +34,16 @@ public class ModButton extends HBox {
 
         // if mod is installed, make the one with "Play" and then the dropdown menu.
         if(this.mod.isInstalled()) {
-            execButton = new Button("Launch");
+            execButton = new Button();
             execButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
                     mod.run();
                 }
             });
-        this.getChildren().add(execButton);
+            execButton.setGraphic(new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/Launch.png"))));
+
+            this.getChildren().add(execButton);
 
         // Dropdown menu
         Button miscButton = new Button("\u25BC");
