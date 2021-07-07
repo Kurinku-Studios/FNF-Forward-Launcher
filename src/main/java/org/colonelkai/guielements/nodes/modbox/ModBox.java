@@ -1,4 +1,4 @@
-package org.colonelkai.guielements.nodes.modlist;
+package org.colonelkai.guielements.nodes.modbox;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -13,6 +13,8 @@ public class ModBox extends HBox {
 
     Mod mod;
 
+    Label title;
+
     public ModBox(Mod mod) {
         super(75);
 
@@ -23,17 +25,22 @@ public class ModBox extends HBox {
         ));
     }
 
+    public Label getTitle() {
+        return this.title;
+    }
+
     public void update() {
         this.getChildren().clear();
         Font fontBig = Font.loadFont(
-                ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 30
+                ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 25
         );
         Font fontSmall = Font.loadFont(
-                ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 20
+                ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 15
         );
 
         Label modNameLabel = new Label(this.mod.getModName());
         modNameLabel.setFont(fontBig);
+        this.title = modNameLabel;
 
         Label modDevLabel = new Label(this.mod.getModDev());
         modDevLabel.setFont(fontSmall);
@@ -46,7 +53,7 @@ public class ModBox extends HBox {
 
         ModButton button = new ModButton(mod);
         button.update();
-        button.setAlignment(Pos.CENTER);
+        button.setAlignment(Pos.CENTER_RIGHT);
         this.getChildren().add(button);
 
         this.setPadding(new Insets(5, 5, 5, 5));

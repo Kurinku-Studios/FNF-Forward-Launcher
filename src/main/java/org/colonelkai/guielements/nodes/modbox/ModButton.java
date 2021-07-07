@@ -1,4 +1,4 @@
-package org.colonelkai.guielements.nodes.modlist;
+package org.colonelkai.guielements.nodes.modbox;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -41,12 +41,17 @@ public class ModButton extends HBox {
                     mod.run();
                 }
             });
-            execButton.setGraphic(new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/Launch.png"))));
+            ImageView buttonImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/Launch.png")));
+            buttonImageView.setFitWidth(75);
+            buttonImageView.setFitHeight(37.5);
+            buttonImageView.setPreserveRatio(true);
+            execButton.setGraphic(buttonImageView);
 
             this.getChildren().add(execButton);
 
         // Dropdown menu
         Button miscButton = new Button("\u25BC");
+        miscButton.prefHeightProperty().bind(execButton.heightProperty());
         this.getChildren().add(miscButton);
 
         ContextMenu miscOptions = new ContextMenu();
@@ -77,7 +82,12 @@ public class ModButton extends HBox {
         });
 
         } else { // if the mod isn't installed, simply make the execButton say "See More" that launches the big mod screen.
-            execButton = new Button("See More");
+            execButton = new Button();
+            ImageView buttonImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/See_More.png")));
+            buttonImageView.setFitWidth(75);
+            buttonImageView.setFitHeight(37.5);
+            buttonImageView.setPreserveRatio(true);
+            execButton.setGraphic(buttonImageView);
             execButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {

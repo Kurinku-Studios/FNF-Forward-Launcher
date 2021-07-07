@@ -113,7 +113,7 @@ public class ModViewBox {
         Label title = new Label(mod.getModName());
         title.setFont(fontBig);
         title.setAlignment(Pos.CENTER);
-        title.setContentDisplay(ContentDisplay.TOP);
+        title.setContentDisplay(ContentDisplay.TOP); // this piece of shit wont center no matter what i do
         vbox.getChildren().add(title);
 
         String description = mod.getModDescription();
@@ -145,6 +145,7 @@ public class ModViewBox {
         vbox.getChildren().add(getPlayButton());
 
         vbox.setPadding(new Insets(5));
+        vbox.setAlignment(Pos.CENTER); // WHY DID THIS WORK, WHY?
 
         return vbox;
     }
@@ -152,8 +153,13 @@ public class ModViewBox {
     public HBox getPlayButton() {
         HBox hbox = new HBox();
         if(mod.isInstalled()) {
-            Button launchButton = new Button("Launch");
-            launchButton.setFont(font);
+            ImageView buttonImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/Launch.png")));
+            buttonImageView.setFitWidth(150);
+            buttonImageView.setFitHeight(75);
+            buttonImageView.setPreserveRatio(true);
+            Button launchButton = new Button();
+            launchButton.setGraphic(buttonImageView);
+            launchButton.setStyle("-fx-background-color: transparent;");
             launchButton.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent actionEvent) {
