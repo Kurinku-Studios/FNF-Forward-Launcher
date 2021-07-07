@@ -22,6 +22,10 @@ public class ModButton extends HBox {
         this.mod = mod;
     }
 
+    /*
+    I hate this class i hope i dont have to touch this ever again
+     */
+
     public void update() {
         this.getChildren().clear();
 

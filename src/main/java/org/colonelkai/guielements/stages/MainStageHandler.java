@@ -1,7 +1,12 @@
 package org.colonelkai.guielements.stages;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -9,10 +14,40 @@ import org.colonelkai.ForwardLauncher;
 import org.colonelkai.guielements.nodes.modbox.ModBox;
 import org.colonelkai.guielements.nodes.modlist.ModList;
 import org.colonelkai.mod.Mods;
+import org.colonelkai.mod.network.ReferenceTableHandler;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class MainStageHandler {
+
+    static ModList modList;
+
+    private static VBox rightSide() {
+        VBox vbox = new VBox();
+
+        // refresh button yes yes
+        Button refreshButton = new Button();
+        ImageView buttonImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/refresh_button.png")));
+        buttonImageView.setFitWidth(200);
+        buttonImageView.setPreserveRatio(true);
+        refreshButton.setGraphic(buttonImageView);
+        refreshButton.setStyle("-fx-background-color: transparent;");
+        refreshButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                try {
+                    ReferenceTableHandler.updateReferenceTable();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                MainStageHandler.modList.update();
+            }
+        });
+        vbox.getChildren().add(refreshButton);
+
+        return vbox;
+    }
 
     private static Scene createScene(Pane root) {
 
@@ -49,8 +84,13 @@ public class MainStageHandler {
 
         ModList modList = new ModList();
         modList.update();
+        MainStageHandler.modList = modList;
 
-        Pane root = new Pane(modList);
+        VBox rightSide = rightSide();
+        rightSide.setAlignment(Pos.CENTER);
+
+        HBox root = new HBox(20, modList, rightSide);
+        root.setAlignment(Pos.CENTER);
 
         root.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, null, null)));
 

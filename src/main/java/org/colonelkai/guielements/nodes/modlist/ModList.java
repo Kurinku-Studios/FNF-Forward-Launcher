@@ -5,10 +5,14 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.colonelkai.guielements.nodes.modbox.ModBox;
 import org.colonelkai.mod.Mod;
 import org.colonelkai.mod.network.ReferenceTableHandler;
@@ -94,6 +98,7 @@ public class ModList extends HBox {
             @Override
             public void handle(ActionEvent actionEvent) {
                 modList.setPage(curPage-1);
+                modList.update();
             }
         });
 
@@ -107,6 +112,7 @@ public class ModList extends HBox {
             @Override
             public void handle(ActionEvent actionEvent) {
                 modList.setPage(curPage+1);
+                modList.update();
             }
         });
 
@@ -117,6 +123,10 @@ public class ModList extends HBox {
 
     private VBox getMiddleList() {
         VBox vbox = new VBox();
+
+        vbox.setBackground(new Background(
+                new BackgroundFill(Color.rgb(220,220,220), null, null)
+        ));
 
         this.modList.stream()
                 .forEach(mod -> {
@@ -138,6 +148,8 @@ public class ModList extends HBox {
             modBox.getTitle().prefWidthProperty().bind(width);
         }
         width.set(width.get()+200);
+
+        vbox.setAlignment(Pos.CENTER);
 
         return vbox;
     }
