@@ -65,7 +65,7 @@ public class Mod {
     }
 
     public boolean isInstalled() {
-        File[] files = new File(Values.FLAUNCHER_DATA_PATH + modID)
+        File[] files = new File(Values.FLAUNCHER_DATA_PATH + modID + File.separator + "source" + File.separator + execPath)
                 .listFiles(File::isFile);
         return files != null && files.length != 0;
     }

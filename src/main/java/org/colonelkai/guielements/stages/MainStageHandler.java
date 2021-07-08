@@ -1,5 +1,6 @@
 package org.colonelkai.guielements.stages;
 
+import com.sun.tools.javac.Main;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -12,6 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.guielements.nodes.downloadslist.DownloadBox;
+import org.colonelkai.guielements.nodes.downloadslist.DownloadsList;
 import org.colonelkai.guielements.nodes.modbox.ModBox;
 import org.colonelkai.guielements.nodes.modlist.ModList;
 import org.colonelkai.mod.Mods;
@@ -25,10 +27,11 @@ import java.util.Optional;
 
 public class MainStageHandler {
 
-    static ModList modList;
+    public static ModList modList;
+    public static DownloadsList downloadsList;
 
     private static VBox rightSide() {
-        VBox vbox = new VBox();
+        VBox vbox = new VBox(25);
 
         // refresh button yes yes
         Button refreshButton = new Button();
@@ -50,13 +53,11 @@ public class MainStageHandler {
         });
         vbox.getChildren().add(refreshButton);
 
-        // download progress
-        // todo change this after done testing
-        Optional<DownloadContext> downloadContext = Values.downloadContexts.stream().findAny();
-        if(downloadContext.isPresent()) {
-            DownloadBox downloadBox = new DownloadBox(downloadContext.get());
-            vbox.getChildren().add(downloadBox);
-        }
+        // download list
+        DownloadsList downloadsList = new DownloadsList();
+        downloadsList.update();
+        MainStageHandler.downloadsList = downloadsList;
+        vbox.getChildren().add(downloadsList);
 
         return vbox;
     }
