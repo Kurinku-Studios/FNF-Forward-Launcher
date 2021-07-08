@@ -46,7 +46,7 @@ public class DownloadsList extends VBox {
             downloads.add(new DownloadBox(downloadContext));
         }
 
-        return downloads;
+        return downloads; // TODO THIS DOESNT SHOW UP, NEED FIX
     }
 
     private Label getBlank() {
