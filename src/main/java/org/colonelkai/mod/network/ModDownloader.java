@@ -163,7 +163,7 @@ public class ModDownloader {
         Files.createDirectories(mainDir.toPath());
         DownloadTask<File> zipDownload = downloadZipAsynced(mod);
 
-        DownloadContext downloadContext = new DownloadContext(mod, mod.getBytesToDownload());
+        DownloadContext downloadContext = new DownloadContext(mod, mod.getBytesToDownload(), zipDownload);
 
         Values.downloadContexts.add(downloadContext);
 
@@ -173,7 +173,6 @@ public class ModDownloader {
             task.getAsynced().start();
             task.onComplete(a -> {
                 Values.downloadContexts.remove(downloadContext);
-                //todo update downloadlist here
             });
         });
 

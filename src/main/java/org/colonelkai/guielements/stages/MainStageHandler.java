@@ -11,13 +11,17 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.guielements.nodes.downloadslist.DownloadBox;
 import org.colonelkai.guielements.nodes.modbox.ModBox;
 import org.colonelkai.guielements.nodes.modlist.ModList;
 import org.colonelkai.mod.Mods;
 import org.colonelkai.mod.network.ReferenceTableHandler;
+import org.colonelkai.mod.network.Values;
+import org.colonelkai.tasks.getter.transfer.download.DownloadContext;
 
 import java.io.IOException;
 import java.util.Objects;
+import java.util.Optional;
 
 public class MainStageHandler {
 
@@ -45,6 +49,14 @@ public class MainStageHandler {
             }
         });
         vbox.getChildren().add(refreshButton);
+
+        // download progress
+        // todo change this after done testing
+        Optional<DownloadContext> downloadContext = Values.downloadContexts.stream().findAny();
+        if(downloadContext.isPresent()) {
+            DownloadBox downloadBox = new DownloadBox(downloadContext.get());
+            vbox.getChildren().add(downloadBox);
+        }
 
         return vbox;
     }

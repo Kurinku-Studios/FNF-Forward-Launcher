@@ -9,13 +9,24 @@ public class DownloadContext {
      */
 
     private Mod mod;
+
+    public DownloadTask getTask() {
+        return task;
+    }
+
+    public void setTask(DownloadTask task) {
+        this.task = task;
+    }
+
     private final long size;
     private boolean isDownloading;
-    private int percentage;
 
-    public DownloadContext(Mod mod, long size) {
+    DownloadTask task;
+
+    public DownloadContext(Mod mod, long size, DownloadTask task) {
         this.mod = mod;
         this.size = size;
+        this.task = task;
     }
 
     public long getSize() {
@@ -24,14 +35,6 @@ public class DownloadContext {
 
     public Mod getMod() {
         return this.mod;
-    }
-
-    public int getPercentage() {
-        return percentage;
-    }
-
-    public void setPercentage(int percentage) {
-        this.percentage = percentage;
     }
 
     public boolean isDownloading() {
