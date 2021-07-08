@@ -28,6 +28,8 @@ public class DownloadsList extends VBox {
     private List<DownloadBox> getDownloads(List<DownloadContext> downloadContextList) {
         List<DownloadBox> downloads = new ArrayList<>();
 
+        System.out.println("GETTING DOWNLOAD BOXES");
+
         downloadContextList.sort(Comparator.comparingLong(DownloadContext::getSize));
 
         // for now it'll only display the 6 biggest downloads, i don't know why anyone would download more than 6
@@ -43,10 +45,11 @@ public class DownloadsList extends VBox {
         }
 
         for(DownloadContext downloadContext : downloadContextList) {
+            System.out.println("ADDED BOX");
             downloads.add(new DownloadBox(downloadContext));
         }
 
-        return downloads; // TODO THIS DOESNT SHOW UP, NEED FIX
+        return downloads; // TODO THIS DOESN'T SHOW UP, NEED FIX
     }
 
     private Label getBlank() {

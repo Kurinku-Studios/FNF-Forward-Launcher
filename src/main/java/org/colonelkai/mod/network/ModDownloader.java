@@ -1,5 +1,6 @@
 package org.colonelkai.mod.network;
 
+import javafx.application.Platform;
 import javafx.scene.control.Label;
 import org.colonelkai.guielements.stages.MainStageHandler;
 import org.colonelkai.mod.Mod;
@@ -172,13 +173,13 @@ public class ModDownloader {
 
         zipDownload.onComplete(zipFile -> {
             downloadContext.setDownloading(false);
-            MainStageHandler.downloadsList.update();
+            Platform.runLater(() -> MainStageHandler.downloadsList.update());
             File folder = new File(getFilePath(mod), "source");
             UnzipTask task = new UnzipTask(zipFile, folder);
             task.getAsynced().start();
             task.onComplete(a -> {
                 Values.downloadContexts.remove(downloadContext);
-                MainStageHandler.downloadsList.update();
+                Platform.runLater(() -> MainStageHandler.downloadsList.update());
             });
         });
 
