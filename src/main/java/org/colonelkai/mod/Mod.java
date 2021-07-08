@@ -3,7 +3,6 @@ package org.colonelkai.mod;
 import org.colonelkai.mod.network.Values;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -16,6 +15,8 @@ public class Mod {
     private String modID;
     private String modName;
     private String modDescription;
+    private String modDev;
+    private String execPath;
 
     private long modVersion;
     private long bytesToDownload;
@@ -29,22 +30,38 @@ public class Mod {
 
     private File localDir;
 
-    public Mod(String modID, String modName, String modDescription,  long modVersion, long bytesToDownload,
+    public Mod(String modID, String modName, String modDescription, String modDev, String execPath,  long modVersion, long bytesToDownload,
                URL downloadURL, URL iconURL, URL bgPictureURL) {
         this.modID = modID;
         this.modName = modName;
+        this.modDev = modDev;
         this.modVersion = modVersion;
         this.modDescription = modDescription;
+        this.execPath = execPath;
         this.bytesToDownload = bytesToDownload;
         this.downloadURL = downloadURL;
         this.iconURL = iconURL;
         this.bgPictureURL = bgPictureURL;
     }
 
+
     public Mod(String modID, String modName, long modVersion) {
         this.modID = modID;
         this.modName = modName;
         this.modVersion = modVersion;
+    }
+
+    public void run() {
+        try {
+            Runtime.getRuntime().exec(
+                    Values.FLAUNCHER_DATA_PATH +this.getModID()+File.separator+ "source"
+                                                                + File.separator + this.execPath,
+                    null,
+                    new File(Values.FLAUNCHER_DATA_PATH+this.getModID()+File.separator+ "source")
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean isInstalled() {
@@ -63,6 +80,13 @@ public class Mod {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getModDev() {
+        return modDev;
+    }
+    public void setModDev(String modDev) {
+        this.modDev = modDev;
     }
 
     public String getModID() {

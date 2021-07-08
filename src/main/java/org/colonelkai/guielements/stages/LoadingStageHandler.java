@@ -1,7 +1,6 @@
-package org.colonelkai.stages;
+package org.colonelkai.guielements.stages;
 
 
-import javafx.concurrent.Task;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -22,7 +21,6 @@ import org.colonelkai.mod.network.ReferenceTableHandler;
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class LoadingStageHandler {
 
@@ -117,11 +115,15 @@ public class LoadingStageHandler {
         ModDownloader.updateMods(oldModSet, newModSet);
         loadingText.setText("Updated outdated mods.");
 
-        // end of loading
-
         Mods.MOD_SET.clear();
         Mods.MOD_SET.addAll(newModSet);
-        primaryStage.hide();
 
+        endLoading(primaryStage);
+    }
+
+    public static void endLoading(Stage endStage) {
+        endStage.hide();
+        Stage mainStage = new Stage();
+        MainStageHandler.init(mainStage);
     }
 }

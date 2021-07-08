@@ -52,6 +52,8 @@ public class ReferenceTableHandler {
                         modID,
                         (String) jsonModObject.get("modName"),
                         (String) jsonModObject.get("modDescription"),
+                        (String) jsonModObject.get("modDev"),
+                        (String) jsonModObject.get("execPath"),
                         (long) jsonModObject.get("modVersion"),
                         (long) jsonModObject.get("bytesToDownload"),
                         new URL((String) jsonModObject.get("downloadURL")),

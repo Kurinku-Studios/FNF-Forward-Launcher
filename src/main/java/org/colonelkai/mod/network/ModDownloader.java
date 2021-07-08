@@ -2,6 +2,7 @@ package org.colonelkai.mod.network;
 
 import javafx.scene.control.Label;
 import org.colonelkai.mod.Mod;
+import org.colonelkai.tasks.getter.transfer.download.DownloadContext;
 import org.colonelkai.tasks.getter.transfer.download.DownloadTask;
 import org.colonelkai.tasks.getter.transfer.zip.UnzipTask;
 
@@ -52,7 +53,10 @@ public class ModDownloader {
     private static void updateMod(Mod mod, Collection<Mod> mods) throws IOException {
         Optional<Mod> opNewMod = mods.parallelStream().filter(m -> m.getModID().equals(mod.getModID())).findAny();
 
-        if(!mod.isInstalled() || opNewMod.isEmpty() || requiresUpdate(mod, opNewMod.get()))  {
+
+        // today i spent 2 hours looking for a bug only to realize i did !mod.isInstalled() instead of mod.isInstalled()
+        // why
+        if(mod.isInstalled() || opNewMod.isEmpty() || requiresUpdate(mod, opNewMod.get()))  {
             mod.deleteMod();
 
             if(opNewMod.isPresent()) {
@@ -158,10 +162,18 @@ public class ModDownloader {
         File mainDir = getFilePath(mod);    
         Files.createDirectories(mainDir.toPath());
         DownloadTask<File> zipDownload = downloadZipAsynced(mod);
+
+        DownloadContext downloadContext = new DownloadContext(mod, mod.getBytesToDownload(), zipDownload);
+
+        Values.downloadContexts.add(downloadContext);
+
         zipDownload.onComplete(zipFile -> {
             File folder = new File(getFilePath(mod), "source");
             UnzipTask task = new UnzipTask(zipFile, folder);
             task.getAsynced().start();
+            task.onComplete(a -> {
+                Values.downloadContexts.remove(downloadContext);
+            });
         });
 
         downloadIconAsynced(mod).getAsynced().start();
