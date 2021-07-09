@@ -7,7 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
-import org.colonelkai.tasks.getter.transfer.download.DownloadContext;
+import org.colonelkai.mod.network.ZippedModDownloadTask;
 
 public class DownloadBox extends VBox {
 
@@ -18,14 +18,24 @@ public class DownloadBox extends VBox {
     I have no idea what i'm doing aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
      */
 
-    DownloadContext downloadContext;
+    private final ZippedModDownloadTask downloadContext;
 
-    Font fontSmall = Font.loadFont(
+    private final Font fontSmall = Font.loadFont(
             ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 20
     );
 
-    public DownloadBox(DownloadContext downloadContext) {
+    public DownloadBox(ZippedModDownloadTask downloadContext) {
         this.downloadContext = downloadContext;
+        this.update();
+        this.getChildren().add(new Label("test"));
+    }
+
+    public ZippedModDownloadTask getDownloadTask() {
+        return this.downloadContext;
+    }
+
+    public Font getSmallFont() {
+        return this.fontSmall;
     }
 
     private HBox topHBox() {
@@ -33,13 +43,13 @@ public class DownloadBox extends VBox {
 
         Label label = new Label();
         String statusString;
-        if(this.downloadContext.isDownloading()) {
+        if (this.downloadContext.isDownloading()) {
             statusString = "Downloading";
         } else {
             statusString = "Unzipping";
         }
 
-        label.setFont(fontSmall);
+        label.setFont(this.fontSmall);
         label.setText(statusString + this.downloadContext.getMod().getModName());
 
         hbox.getChildren().add(label);
@@ -51,8 +61,8 @@ public class DownloadBox extends VBox {
 
     private ProgressBar getProgressBar() {
         ProgressBar progressBar = new ProgressBar(0);
-        this.downloadContext.getTask().onProgressUpdate(p->progressBar.setProgress(
-                ((int) p * 100) / downloadContext.getSize()
+        this.downloadContext.onProgressUpdate(p -> progressBar.setProgress(
+                (int) ((p * 100) / downloadContext.getMod().getBytesToDownload())
         ));
         return progressBar;
     }
@@ -62,6 +72,5 @@ public class DownloadBox extends VBox {
 
         this.getChildren().add(topHBox());
         this.getChildren().add(getProgressBar());
-
     }
 }

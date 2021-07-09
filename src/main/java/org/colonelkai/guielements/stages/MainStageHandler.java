@@ -1,6 +1,5 @@
 package org.colonelkai.guielements.stages;
 
-import com.sun.tools.javac.Main;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -12,18 +11,12 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
-import org.colonelkai.guielements.nodes.downloadslist.DownloadBox;
 import org.colonelkai.guielements.nodes.downloadslist.DownloadsList;
-import org.colonelkai.guielements.nodes.modbox.ModBox;
 import org.colonelkai.guielements.nodes.modlist.ModList;
-import org.colonelkai.mod.Mods;
 import org.colonelkai.mod.network.ReferenceTableHandler;
-import org.colonelkai.mod.network.Values;
-import org.colonelkai.tasks.getter.transfer.download.DownloadContext;
 
 import java.io.IOException;
 import java.util.Objects;
-import java.util.Optional;
 
 public class MainStageHandler {
 

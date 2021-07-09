@@ -15,6 +15,7 @@ import javafx.stage.StageStyle;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.mod.Mod;
 import org.colonelkai.mod.Mods;
+import org.colonelkai.mod.network.DownloadContext;
 import org.colonelkai.mod.network.ModDownloader;
 import org.colonelkai.mod.network.ReferenceTableHandler;
 
@@ -112,7 +113,7 @@ public class LoadingStageHandler {
         Set<Mod> newModSet = ReferenceTableHandler.getAllMods();
 
         loadingText.setText("Updating outdated mods...");
-        ModDownloader.updateMods(oldModSet, newModSet);
+        ModDownloader.updateMods(new DownloadContext(), oldModSet, newModSet);
         loadingText.setText("Updated outdated mods.");
 
         Mods.MOD_SET.clear();

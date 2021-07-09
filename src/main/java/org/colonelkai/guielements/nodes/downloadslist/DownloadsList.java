@@ -1,6 +1,8 @@
 package org.colonelkai.guielements.nodes.downloadslist;
 
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -8,12 +10,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.mod.network.ZippedModDownloadTask;
 import org.colonelkai.mod.network.Values;
-import org.colonelkai.tasks.getter.transfer.download.DownloadContext;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class DownloadsList extends VBox {
 
@@ -25,31 +26,36 @@ public class DownloadsList extends VBox {
 
     }
 
-    private List<DownloadBox> getDownloads(List<DownloadContext> downloadContextList) {
-        List<DownloadBox> downloads = new ArrayList<>();
-
+    private SortedSet<DownloadBox> getDownloads(Collection<ZippedModDownloadTask> downloadContextList) {
         System.out.println("GETTING DOWNLOAD BOXES");
 
-        downloadContextList.sort(Comparator.comparingLong(DownloadContext::getSize));
-
-        // for now it'll only display the 6 biggest downloads, i don't know why anyone would download more than 6
-        // at one go, but i'll fix this on a later release as i'm rushing this before F3 launches.
-        // TODO fix this. this is horrible
-        if(downloadContextList.size()>6) {
-            List<DownloadContext> newDownloadContextList = new ArrayList<>();
-            for(int i = 0; i < 6; i++) {
-                newDownloadContextList.add(downloadContextList.get(i));
+        List<ZippedModDownloadTask> pageContexts = new ArrayList<>(7);
+        for (ZippedModDownloadTask context : downloadContextList) {
+            for (int i = 0; i < 6; i++) {
+                ZippedModDownloadTask contextAt = null;
+                if (pageContexts.size() > i) {
+                    contextAt = pageContexts.get(i);
+                }
+                if (contextAt == null) {
+                    if (pageContexts.size() <= i) {
+                        pageContexts.add(i, context);
+                        break;
+                    }
+                    pageContexts.set(i, context);
+                    break;
+                }
+                if (contextAt.getMod().getBytesToDownload() < context.getMod().getBytesToDownload()) {
+                    pageContexts.add(i, context);
+                    pageContexts.remove(pageContexts.size() - 1);
+                    break;
+                }
             }
-            downloadContextList.clear();
-            downloadContextList.addAll(newDownloadContextList);
         }
-
-        for(DownloadContext downloadContext : downloadContextList) {
-            System.out.println("ADDED BOX");
-            downloads.add(new DownloadBox(downloadContext));
-        }
-
-        return downloads; // TODO THIS DOESN'T SHOW UP, NEED FIX
+        return pageContexts
+                .stream()
+                .map(DownloadBox::new)
+                .collect(Collectors
+                        .toCollection(() -> new TreeSet<>(Comparator.comparingLong(downloadBox -> downloadBox.getDownloadTask().getMod().getBytesToDownload()))));
     }
 
     private Label getBlank() {
@@ -60,22 +66,23 @@ public class DownloadsList extends VBox {
     }
 
     public void update() {
-        this.getChildren().clear();
+        ObservableList<Node> children = this.getChildren();
+        children.clear();
 
         this.setPrefHeight(300);
         this.setPrefWidth(100);
         this.setBackground(new Background(
-                new BackgroundFill(Color.rgb(220,220,220), null, null)
+                new BackgroundFill(Color.rgb(220, 220, 220), null, null)
         ));
         this.setAlignment(Pos.CENTER);
 
-        List<DownloadContext> downloadContextList = Values.downloadContexts;
+        Collection<ZippedModDownloadTask> downloadContextList = Values.MOD_TASKS;
 
-        if(downloadContextList.isEmpty()) {
-            this.getChildren().add(this.getBlank());
+        if (downloadContextList.isEmpty()) {
+            children.add(this.getBlank());
             System.out.println("balls");
         } else {
-            this.getChildren().addAll(getDownloads(downloadContextList));
+            children.addAll(getDownloads(downloadContextList));
             System.out.println("showing downloads");
         }
     }

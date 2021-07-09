@@ -42,8 +42,13 @@ public class UnzipTask extends AbstractTransferTask<File, ZipFileContext> {
                         }
                     });
             zip.close();
-            Files.delete(this.zipFile.toPath());
+            try {
+                Files.delete(this.zipFile.toPath());
+            } catch (IOException ex) {
+                this.zipFile.deleteOnExit();
+            }
         } catch (IOException e) {
+            System.err.println("Could not extract: " + this.zipFile.getPath());
             this.exceptionEvents.parallelStream().forEach(ex -> ex.accept(e));
             throw new RuntimeErrorException(new Error(e));
         }
