@@ -10,6 +10,8 @@ If you are more of the hands on sort, then you can contribute by modifing the co
 - commit and push your changes to your fork
 - make a "Pull request" on this project with your changes
 
-any PR's will be reviewed, changes maybe asked for to your code making it the standard expected from this project.
+any PR's will be reviewed, changes maybe asked for to your code making it the standard expected from this project as well as removing any security vulnerabilities (if found).
 
-Thanks 
+If your PR gets merged with the project, not only will you have your code in this launcher, but your github username will forever be in the contributions section on Github. 
+
+Thanks and happy hacking. 
