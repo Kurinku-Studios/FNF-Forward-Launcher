@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,8 +25,14 @@ public class ReferenceTableHandler {
                 Values.FLAUNCHER_DATA_PATH + "referencetable.json"
         );
 
-        file.delete();
+        if (file.exists()) {
+            Files.delete(file.toPath());
+        }
+        if (!file.getParentFile().exists()) {
+            Files.createDirectories(file.getParentFile().toPath());
+        }
 
+        Files.createFile(file.toPath());
         FileOutputStream fileOS = new FileOutputStream(file.getPath());
 
         FileChannel writeChannel = fileOS.getChannel();
@@ -34,12 +41,16 @@ public class ReferenceTableHandler {
 
     public static Set<Mod> getAllMods() {
         File jsonFilePath = new File(System.getenv("APPDATA") + File.separator + "ForwardLauncher"
-        + File.separator + "FLauncherData" + File.separator + "referencetable.json");
+                + File.separator + "FLauncherData" + File.separator + "referencetable.json");
+
+        if (!jsonFilePath.exists()) {
+            return new HashSet<>();
+        }
 
         JSONParser parser = new JSONParser();
         Set<Mod> mods = new HashSet<>();
 
-        try(Reader reader = new FileReader(jsonFilePath)){
+        try (Reader reader = new FileReader(jsonFilePath)) {
 
             JSONObject jsonObject = (JSONObject) parser.parse(reader);
 

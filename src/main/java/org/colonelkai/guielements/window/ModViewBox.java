@@ -12,26 +12,22 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.mod.Mod;
+import org.colonelkai.mod.network.DownloadContext;
+import org.colonelkai.mod.network.ZippedModDownloadTask;
 import org.colonelkai.mod.network.ModDownloader;
 import org.colonelkai.mod.network.Values;
-import org.colonelkai.tasks.getter.transfer.download.DownloadContext;
 
-import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.stream.Collectors;
 
 public class ModViewBox {
 
@@ -66,7 +62,7 @@ public class ModViewBox {
         Image bgImage;
 
         // If the mod is downloaded, just get the background image from there.
-        if(mod.isInstalled()) {
+        if (mod.isInstalled()) {
             bgImage = new Image(new File(
                     Values.FLAUNCHER_DATA_PATH + File.separator + mod.getModID() + File.separator + "bg.png"
             ).toURI().toString());
@@ -77,7 +73,7 @@ public class ModViewBox {
         BackgroundImage backgroundImage = new BackgroundImage(bgImage,
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER,
-                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO,false, false, true, true));
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true));
 
         return new Background(backgroundImage);
     }
@@ -87,7 +83,7 @@ public class ModViewBox {
         Image iconImage;
 
         // If the mod is downloaded, just get the icon image from there.
-        if(mod.isInstalled()) {
+        if (mod.isInstalled()) {
             iconImage = new Image(new File(
                     Values.FLAUNCHER_DATA_PATH + File.separator + mod.getModID() + File.separator + "icon.png"
             ).toURI().toString());
@@ -108,7 +104,7 @@ public class ModViewBox {
         vbox.setAlignment(Pos.CENTER_RIGHT);
 
         vbox.setBackground(new Background(
-                new BackgroundFill(Color.rgb(220,220,220, 0.8), null, null)
+                new BackgroundFill(Color.rgb(220, 220, 220, 0.8), null, null)
         ));
 
         Label title = new Label(mod.getModName());
@@ -121,7 +117,7 @@ public class ModViewBox {
 
         // I had to add newlines to this description so it doesn't go off to the side of the screen
 
-        List<String> descStringList = Arrays.asList(description.split(" ")); // fucking regex, luckily it's just a space
+        String[] descStringList = description.split(" "); // fucking regex, luckily it's just a space
         List<String> finalDescStringList = new ArrayList<>();
 
         long maxCharactersBeforeNewline = 20;
@@ -154,17 +150,17 @@ public class ModViewBox {
     public HBox getPlayButton() {
         HBox hbox = new HBox();
 
-        List<DownloadContext> downloads = Values.downloadContexts;
+        Collection<ZippedModDownloadTask> downloads = Values.MOD_TASKS;
 
         downloads
                 .stream()
                 .filter(downloadContext -> downloadContext.getMod().getModID().equals(this.mod.getModID()));
 
-        if(!downloads.isEmpty()) {
+        if (!downloads.isEmpty()) {
             Label label = new Label("Downloading...");
             label.setFont(font);
             hbox.getChildren().add(label);
-        } else if(mod.isInstalled()) {
+        } else if (mod.isInstalled()) {
             ImageView buttonImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/Launch.png")));
             buttonImageView.setFitWidth(150);
             buttonImageView.setFitHeight(75);
@@ -188,16 +184,13 @@ public class ModViewBox {
             buttonImageView.setPreserveRatio(true);
             downloadButton.setGraphic(buttonImageView);
             downloadButton.setStyle("-fx-background-color: transparent;");
-            downloadButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    try {
-                        ModDownloader.downloadModAsynced(mod);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    window.hide();
+            downloadButton.setOnAction(actionEvent -> {
+                try {
+                    ModDownloader.downloadModAsynced(new DownloadContext(), mod);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                window.hide();
             });
             hbox.getChildren().add(downloadButton);
         }

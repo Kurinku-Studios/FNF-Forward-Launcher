@@ -8,6 +8,8 @@ public interface GetterTask<T> extends Supplier<T> {
     void onComplete(Consumer<T> consumer);
 
     default Thread getAsynced() {
+        Class<?> clazz = this.getClass();
+        System.out.println("t: " + clazz.getName());
         return new Thread(this::get);
     }
 
