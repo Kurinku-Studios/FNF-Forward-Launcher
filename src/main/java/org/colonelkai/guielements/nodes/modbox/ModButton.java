@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.guielements.stages.MainStageHandler;
 import org.colonelkai.guielements.window.ModViewBox;
 import org.colonelkai.mod.Mod;
 
@@ -55,7 +56,10 @@ public class ModButton extends HBox {
             ContextMenu miscOptions = new ContextMenu();
 
             MenuItem uninstall = new MenuItem("Uninstall");
-            uninstall.setOnAction(actionEvent -> mod.deleteMod());
+            uninstall.setOnAction(actionEvent -> {
+                mod.deleteMod();
+                try {MainStageHandler.modList.update();} catch (Exception ignored) {}
+            });
 
             MenuItem seeMore = new MenuItem("See More");
             seeMore.setOnAction(actionEvent -> new ModViewBox(mod).display());
