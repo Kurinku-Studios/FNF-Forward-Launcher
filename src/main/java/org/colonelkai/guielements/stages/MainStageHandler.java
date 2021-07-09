@@ -1,7 +1,5 @@
 package org.colonelkai.guielements.stages;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,7 +19,7 @@ import java.util.Objects;
 public class MainStageHandler {
 
     public static ModList modList;
-    public static DownloadsList downloadsList;
+    public static DownloadsList downloadsList = new DownloadsList();
 
     private static VBox rightSide() {
         VBox vbox = new VBox(25);
@@ -33,16 +31,13 @@ public class MainStageHandler {
         buttonImageView.setPreserveRatio(true);
         refreshButton.setGraphic(buttonImageView);
         refreshButton.setStyle("-fx-background-color: transparent;");
-        refreshButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                try {
-                    ReferenceTableHandler.updateReferenceTable();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                MainStageHandler.modList.update();
+        refreshButton.setOnAction(actionEvent -> {
+            try {
+                ReferenceTableHandler.updateReferenceTable();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+            MainStageHandler.modList.update();
         });
         vbox.getChildren().add(refreshButton);
 
@@ -62,7 +57,7 @@ public class MainStageHandler {
         BackgroundImage backgroundImage = new BackgroundImage(image,
                 BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT,
                 BackgroundPosition.CENTER,
-                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO,false, false, true, true));
+                new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, true));
 
         Background background = new Background(backgroundImage);
 

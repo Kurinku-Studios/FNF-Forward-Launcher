@@ -1,17 +1,21 @@
 package org.colonelkai.guielements.nodes.downloadslist;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
-import org.colonelkai.mod.network.ZippedModDownloadTask;
+import org.colonelkai.guielements.stages.MainStageHandler;
+import org.colonelkai.mod.network.DownloadContext;
 import org.colonelkai.mod.network.Values;
+import org.colonelkai.mod.network.ZippedModDownloadTask;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -30,7 +34,7 @@ public class DownloadsList extends VBox {
         System.out.println("GETTING DOWNLOAD BOXES");
 
         List<ZippedModDownloadTask> pageContexts = new ArrayList<>(7);
-        for (ZippedModDownloadTask context : downloadContextList) {
+        for (ZippedModDownloadTask modDownloadTask : downloadContextList) {
             for (int i = 0; i < 6; i++) {
                 ZippedModDownloadTask contextAt = null;
                 if (pageContexts.size() > i) {
@@ -38,14 +42,14 @@ public class DownloadsList extends VBox {
                 }
                 if (contextAt == null) {
                     if (pageContexts.size() <= i) {
-                        pageContexts.add(i, context);
+                        pageContexts.add(i, modDownloadTask);
                         break;
                     }
-                    pageContexts.set(i, context);
+                    pageContexts.set(i, modDownloadTask);
                     break;
                 }
-                if (contextAt.getMod().getBytesToDownload() < context.getMod().getBytesToDownload()) {
-                    pageContexts.add(i, context);
+                if (contextAt.getMod().getBytesToDownload() < modDownloadTask.getMod().getBytesToDownload()) {
+                    pageContexts.add(i, modDownloadTask);
                     pageContexts.remove(pageContexts.size() - 1);
                     break;
                 }
@@ -53,7 +57,31 @@ public class DownloadsList extends VBox {
         }
         return pageContexts
                 .stream()
-                .map(DownloadBox::new)
+                .map(c -> {
+                    DownloadBox box = new DownloadBox(c);
+                    DownloadContext context = new DownloadContext();
+                    context.addOnProgressExtract(zfc -> {
+                        ProgressBar bar = box.getProgressBar();
+                        double progress = ((double) zfc.getCount()) / zfc.getTotalCount();
+                        Platform.runLater(() -> box.getStatusLabel().setText("Unzipping (" + (((int) (progress * 100.0))) + "%)"));
+                        bar.setProgress(progress);
+                    });
+                    context.addOnCompleteExtract((v) -> {
+                        System.out.println("Updating mod list");
+                        Platform.runLater(() ->
+                                MainStageHandler.modList.update()
+                        );
+                    });
+                    context.addOnProgressDownload(value -> {
+                        ProgressBar bar = box.getProgressBar();
+                        double progress = ((double) value) / c.getMod().getBytesToDownload();
+                        Platform.runLater(() -> box.getStatusLabel().setText("Downloading (" + (((int) (progress * 100.0))) + "%)"));
+                        bar.setProgress(progress);
+
+                    });
+                    c.applyDownloadContext(context);
+                    return box;
+                })
                 .collect(Collectors
                         .toCollection(() -> new TreeSet<>(Comparator.comparingLong(downloadBox -> downloadBox.getDownloadTask().getMod().getBytesToDownload()))));
     }

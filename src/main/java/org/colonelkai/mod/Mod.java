@@ -30,7 +30,7 @@ public class Mod {
 
     private File localDir;
 
-    public Mod(String modID, String modName, String modDescription, String modDev, String execPath,  long modVersion, long bytesToDownload,
+    public Mod(String modID, String modName, String modDescription, String modDev, String execPath, long modVersion, long bytesToDownload,
                URL downloadURL, URL iconURL, URL bgPictureURL) {
         this.modID = modID;
         this.modName = modName;
@@ -54,10 +54,10 @@ public class Mod {
     public void run() {
         try {
             Runtime.getRuntime().exec(
-                    Values.FLAUNCHER_DATA_PATH +this.getModID()+File.separator+ "source"
-                                                                + File.separator + this.execPath,
+                    Values.FLAUNCHER_DATA_PATH + this.getModID() + File.separator + "source"
+                            + File.separator + this.execPath,
                     null,
-                    new File(Values.FLAUNCHER_DATA_PATH+this.getModID()+File.separator+ "source")
+                    new File(Values.FLAUNCHER_DATA_PATH + this.getModID() + File.separator + "source")
             );
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,9 +65,10 @@ public class Mod {
     }
 
     public boolean isInstalled() {
-        File[] files = new File(Values.FLAUNCHER_DATA_PATH + modID + File.separator + "source" + File.separator + execPath)
-                .listFiles(File::isFile);
-        return files != null && files.length != 0;
+        File file = new File(Values.FLAUNCHER_DATA_PATH + modID + File.separator + "source" + File.separator + execPath);
+        return file.exists();
+        /*File[] files = file.listFiles(File::isFile);
+        return files != null && files.length != 0;*/
     }
 
     public void deleteMod() {
@@ -85,6 +86,7 @@ public class Mod {
     public String getModDev() {
         return modDev;
     }
+
     public void setModDev(String modDev) {
         this.modDev = modDev;
     }
@@ -92,6 +94,7 @@ public class Mod {
     public String getModID() {
         return modID;
     }
+
     public void setModID(String modID) {
         this.modID = modID;
     }
@@ -99,6 +102,7 @@ public class Mod {
     public String getModName() {
         return modName;
     }
+
     public void setModName(String modName) {
         this.modName = modName;
     }
@@ -106,6 +110,7 @@ public class Mod {
     public long getModVersion() {
         return modVersion;
     }
+
     public void setModVersion(long modVersion) {
         this.modVersion = modVersion;
     }
@@ -113,6 +118,7 @@ public class Mod {
     public String getModDescription() {
         return modDescription;
     }
+
     public void setModDescription(String modDescription) {
         this.modDescription = modDescription;
     }
@@ -120,6 +126,7 @@ public class Mod {
     public long getBytesToDownload() {
         return bytesToDownload;
     }
+
     public void setBytesToDownload(long bytesToDownload) {
         this.bytesToDownload = bytesToDownload;
     }
@@ -127,6 +134,7 @@ public class Mod {
     public URL getDownloadURL() {
         return downloadURL;
     }
+
     public void setDownloadURL(URL downloadURL) {
         this.downloadURL = downloadURL;
     }
@@ -134,6 +142,7 @@ public class Mod {
     public URL getIconURL() {
         return iconURL;
     }
+
     public void setIconURL(URL iconURL) {
         this.iconURL = iconURL;
     }
@@ -141,6 +150,7 @@ public class Mod {
     public URL getBgPictureURL() {
         return bgPictureURL;
     }
+
     public void setBgPictureURL(URL bgPictureURL) {
         this.bgPictureURL = bgPictureURL;
     }
@@ -148,6 +158,7 @@ public class Mod {
     public Optional<InputStream> getCachedIcon() {
         return Optional.ofNullable(cachedIcon);
     }
+
     public void setCachedIcon(InputStream cachedIcon) {
         this.cachedIcon = cachedIcon;
     }
@@ -155,6 +166,7 @@ public class Mod {
     public Optional<InputStream> getCachedBGPicture() {
         return Optional.ofNullable(cachedBGPicture);
     }
+
     public void setCachedBGPicture(InputStream cachedBGPicture) {
         this.cachedBGPicture = cachedBGPicture;
     }
@@ -162,6 +174,7 @@ public class Mod {
     public File getLocalDir() {
         return localDir;
     }
+
     public void setLocalDir(File localDir) {
         this.localDir = localDir;
     }

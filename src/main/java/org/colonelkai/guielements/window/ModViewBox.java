@@ -168,12 +168,9 @@ public class ModViewBox {
             Button launchButton = new Button();
             launchButton.setGraphic(buttonImageView);
             launchButton.setStyle("-fx-background-color: transparent;");
-            launchButton.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent actionEvent) {
-                    mod.run();
-                    window.hide();
-                }
+            launchButton.setOnAction(actionEvent -> {
+                mod.run();
+                window.hide();
             });
             hbox.getChildren().add(launchButton);
         } else {
@@ -185,8 +182,9 @@ public class ModViewBox {
             downloadButton.setGraphic(buttonImageView);
             downloadButton.setStyle("-fx-background-color: transparent;");
             downloadButton.setOnAction(actionEvent -> {
+                DownloadContext context = new DownloadContext();
                 try {
-                    ModDownloader.downloadModAsynced(new DownloadContext(), mod);
+                    ModDownloader.downloadModAsynced(context, this.mod);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

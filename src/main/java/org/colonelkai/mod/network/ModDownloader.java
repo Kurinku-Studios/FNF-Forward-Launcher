@@ -31,7 +31,7 @@ public class ModDownloader {
 
     private static void updateMod(DownloadContext context, Mod mod, Collection<Mod> mods) throws IOException {
         Optional<Mod> opNewMod = mods.parallelStream().filter(m -> m.getModID().equals(mod.getModID())).findAny();
-        if (mod.isInstalled() || opNewMod.isEmpty() || requiresUpdate(mod, opNewMod.get())) {
+        if (/*mod.isInstalled() ||*/ opNewMod.isEmpty() || requiresUpdate(mod, opNewMod.get())) {
             mod.deleteMod();
 
             if (opNewMod.isPresent()) {
@@ -74,11 +74,10 @@ public class ModDownloader {
 
         MainStageHandler.downloadsList.update();
 
-        zipDownload.onComplete(zipFile -> Platform.runLater(() -> MainStageHandler.downloadsList.update()));
-        zipDownload.getUnzipTask().onComplete(a -> Platform.runLater(() -> {
+        zipDownload.getUnzipTask().onComplete(a -> {
             Values.MOD_TASKS.remove(zipDownload);
-            MainStageHandler.downloadsList.update();
-        }));
+            Platform.runLater(MainStageHandler.downloadsList::update);
+        });
 
         downloadIconAsynced(context, mod).getAsynced().start();
         downloadBigPictureAsynced(context, mod).getAsynced().start();

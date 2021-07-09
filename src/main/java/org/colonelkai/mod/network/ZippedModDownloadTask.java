@@ -4,8 +4,10 @@ import org.colonelkai.mod.Mod;
 import org.colonelkai.tasks.getter.transfer.download.DownloadTask;
 import org.colonelkai.tasks.getter.transfer.zip.UnzipTask;
 
-import java.io.*;
-import java.net.HttpURLConnection;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.function.Function;
 
@@ -20,16 +22,14 @@ public class ZippedModDownloadTask extends DownloadTask<File> {
         File folder = new File(downloadTo.getParentFile(), "source");
         this.unzip = new UnzipTask(downloadTo, folder);
         this.mod = mod;
-        this.onComplete(zipFile -> {
-            System.out.println("OnComplete");
-            this.unzip.getAsynced().start();
-        });
+        this.onComplete(zipFile -> this.unzip.getAsynced().start());
     }
 
     public void applyDownloadContext(DownloadContext context) {
         context.getOnCompleteExtract().forEach(this.unzip::onComplete);
         context.getOnCompleteDownload().forEach(this::onComplete);
         context.getOnProgressExtract().forEach(this.unzip::onProgressUpdate);
+        context.getOnProgressDownload().forEach(this::onProgressUpdate);
     }
 
     public UnzipTask getUnzipTask() {
@@ -47,7 +47,6 @@ public class ZippedModDownloadTask extends DownloadTask<File> {
     @Override
     public File get() {
         this.isDownloading = true;
-        InputStream is = this.getInput();
         File file = super.get();
         this.isDownloading = false;
         return file;

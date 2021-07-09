@@ -1,9 +1,9 @@
 package org.colonelkai.guielements.nodes.downloadslist;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
@@ -19,6 +19,8 @@ public class DownloadBox extends VBox {
      */
 
     private final ZippedModDownloadTask downloadContext;
+    private final ProgressBar progressBar = new ProgressBar(0);
+    private final Label statusLabel = new Label("Downloading");
 
     private final Font fontSmall = Font.loadFont(
             ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 20
@@ -26,8 +28,13 @@ public class DownloadBox extends VBox {
 
     public DownloadBox(ZippedModDownloadTask downloadContext) {
         this.downloadContext = downloadContext;
+        downloadContext.onComplete(c -> Platform.runLater(() -> this.statusLabel.setText("Unzipping")));
+        this.progressBar.prefWidthProperty().bind(this.widthProperty());
         this.update();
-        this.getChildren().add(new Label("test"));
+    }
+
+    public Label getStatusLabel() {
+        return this.statusLabel;
     }
 
     public ZippedModDownloadTask getDownloadTask() {
@@ -38,39 +45,28 @@ public class DownloadBox extends VBox {
         return this.fontSmall;
     }
 
-    private HBox topHBox() {
-        HBox hbox = new HBox();
+    private VBox topVBox() {
+        VBox box = new VBox();
 
-        Label label = new Label();
-        String statusString;
-        if (this.downloadContext.isDownloading()) {
-            statusString = "Downloading";
-        } else {
-            statusString = "Unzipping";
-        }
+        Label label = new Label(this.downloadContext.getMod().getModName());
 
         label.setFont(this.fontSmall);
-        label.setText(statusString + this.downloadContext.getMod().getModName());
+        label.setText(this.downloadContext.getMod().getModName());
 
-        hbox.getChildren().add(label);
-
-        hbox.setAlignment(Pos.CENTER);
-
-        return hbox;
+        box.getChildren().add(label);
+        box.getChildren().add(this.statusLabel);
+        box.setAlignment(Pos.CENTER);
+        return box;
     }
 
-    private ProgressBar getProgressBar() {
-        ProgressBar progressBar = new ProgressBar(0);
-        this.downloadContext.onProgressUpdate(p -> progressBar.setProgress(
-                (int) ((p * 100) / downloadContext.getMod().getBytesToDownload())
-        ));
+    public ProgressBar getProgressBar() {
         return progressBar;
     }
 
     public void update() {
         this.getChildren().clear();
 
-        this.getChildren().add(topHBox());
+        this.getChildren().add(topVBox());
         this.getChildren().add(getProgressBar());
     }
 }

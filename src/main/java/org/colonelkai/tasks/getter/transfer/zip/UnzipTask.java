@@ -34,6 +34,9 @@ public class UnzipTask extends AbstractTransferTask<File, ZipFileContext> {
                             context.nextEntry(entry);
                             InputStream inputStream = zip.getInputStream(entry);
                             File fileToBe = new File(this.folder, entry.getName()); //create location to file to be
+                            Files.deleteIfExists(fileToBe.toPath());
+
+                            this.processEvents.parallelStream().forEach(c -> c.accept(context));
                             Files.createDirectories(fileToBe.getParentFile().toPath());
                             Files.copy(inputStream, fileToBe.toPath());
                             inputStream.close();
@@ -47,6 +50,7 @@ public class UnzipTask extends AbstractTransferTask<File, ZipFileContext> {
             } catch (IOException ex) {
                 this.zipFile.deleteOnExit();
             }
+            this.completeEvents.parallelStream().forEach(c -> c.accept(this.zipFile));
         } catch (IOException e) {
             System.err.println("Could not extract: " + this.zipFile.getPath());
             this.exceptionEvents.parallelStream().forEach(ex -> ex.accept(e));
