@@ -20,6 +20,7 @@ import org.colonelkai.ForwardLauncher;
 import org.colonelkai.mod.Mod;
 import org.colonelkai.mod.network.ModDownloader;
 import org.colonelkai.mod.network.Values;
+import org.colonelkai.tasks.getter.transfer.download.DownloadContext;
 
 import java.awt.*;
 import java.io.File;
@@ -152,7 +153,18 @@ public class ModViewBox {
 
     public HBox getPlayButton() {
         HBox hbox = new HBox();
-        if(mod.isInstalled()) {
+
+        List<DownloadContext> downloads = Values.downloadContexts;
+
+        downloads
+                .stream()
+                .filter(downloadContext -> downloadContext.getMod().getModID().equals(this.mod.getModID()));
+
+        if(!downloads.isEmpty()) {
+            Label label = new Label("Downloading...");
+            label.setFont(font);
+            hbox.getChildren().add(label);
+        } else if(mod.isInstalled()) {
             ImageView buttonImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/Launch.png")));
             buttonImageView.setFitWidth(150);
             buttonImageView.setFitHeight(75);
