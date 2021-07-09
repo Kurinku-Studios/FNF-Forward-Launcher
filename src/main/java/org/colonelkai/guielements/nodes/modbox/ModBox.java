@@ -11,17 +11,14 @@ import org.colonelkai.mod.Mod;
 
 public class ModBox extends HBox {
 
-    Mod mod;
-
-    Label title;
+    private final Mod mod;
+    private Label title;
 
     public ModBox(Mod mod) {
         super(75);
-
         this.mod = mod;
-
         this.setBackground(new Background(
-                new BackgroundFill(Color.rgb(220,220,220), null, null)
+                new BackgroundFill(Color.rgb(220, 220, 220), null, null)
         ));
     }
 
@@ -32,11 +29,9 @@ public class ModBox extends HBox {
     public void update() {
         this.getChildren().clear();
         Font fontBig = Font.loadFont(
-                ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 25
-        );
+                ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 25);
         Font fontSmall = Font.loadFont(
-                ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 15
-        );
+                ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 15);
 
         Label modNameLabel = new Label(this.mod.getModName());
         modNameLabel.setFont(fontBig);
@@ -58,7 +53,6 @@ public class ModBox extends HBox {
 
         this.setPadding(new Insets(5, 5, 5, 5));
     }
-
 
 
 }
