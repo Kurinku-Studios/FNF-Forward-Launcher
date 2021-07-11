@@ -33,28 +33,19 @@ public class DownloadsList extends VBox {
     private SortedSet<DownloadBox> getDownloads(Collection<ZippedModDownloadTask> downloadContextList) {
         System.out.println("GETTING DOWNLOAD BOXES");
 
-        List<ZippedModDownloadTask> pageContexts = new ArrayList<>(7);
-        for (ZippedModDownloadTask modDownloadTask : downloadContextList) {
-            for (int i = 0; i < 6; i++) {
-                ZippedModDownloadTask contextAt = null;
-                if (pageContexts.size() > i) {
-                    contextAt = pageContexts.get(i);
-                }
-                if (contextAt == null) {
-                    if (pageContexts.size() <= i) {
-                        pageContexts.add(i, modDownloadTask);
-                        break;
-                    }
-                    pageContexts.set(i, modDownloadTask);
-                    break;
-                }
-                if (contextAt.getMod().getBytesToDownload() < modDownloadTask.getMod().getBytesToDownload()) {
-                    pageContexts.add(i, modDownloadTask);
-                    pageContexts.remove(pageContexts.size() - 1);
-                    break;
-                }
+        List<ZippedModDownloadTask> pageContexts = new ArrayList<>(List.copyOf(downloadContextList));
+
+        pageContexts.sort(Comparator.comparingLong(dc -> dc.getMod().getBytesToDownload()));
+
+        if(pageContexts.size() > 5) {
+            List<ZippedModDownloadTask> tempPageContexts = new ArrayList<>();
+            for(int i = 0; i < 4; i++) {
+                tempPageContexts.add(pageContexts.get(i));
             }
+            pageContexts.clear();
+            pageContexts.addAll(tempPageContexts);
         }
+
         return pageContexts
                 .stream()
                 .map(c -> {
