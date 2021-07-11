@@ -57,7 +57,8 @@ public class Mod {
                     Values.FLAUNCHER_DATA_PATH + this.getModID() + File.separator + "source"
                             + File.separator + this.execPath,
                     null,
-                    new File(Values.FLAUNCHER_DATA_PATH + this.getModID() + File.separator + "source")
+                    new File(Values.FLAUNCHER_DATA_PATH + this.getModID() + File.separator + "source"
+                            + File.separator + this.execPath).getParentFile()
             );
         } catch (IOException e) {
             e.printStackTrace();
