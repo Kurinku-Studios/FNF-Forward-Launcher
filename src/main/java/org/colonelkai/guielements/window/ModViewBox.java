@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ModViewBox {
 
@@ -152,11 +153,7 @@ public class ModViewBox {
 
         Collection<ZippedModDownloadTask> downloads = Values.MOD_TASKS;
 
-        downloads
-                .stream()
-                .filter(downloadContext -> downloadContext.getMod().getModID().equals(this.mod.getModID()));
-
-        if (!downloads.isEmpty()) {
+        if (downloads.stream().anyMatch(dc -> dc.getMod().getModID().equals(this.mod.getModID()))) {
             Label label = new Label("Downloading...");
             label.setFont(font);
             hbox.getChildren().add(label);
