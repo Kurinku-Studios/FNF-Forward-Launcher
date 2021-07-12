@@ -34,9 +34,8 @@ public class DownloadBox extends VBox {
         init();
     }
 
-    private void init(){
+    private void init() {
         this.update();
-        System.out.println(this.toString());
         DownloadContext context = new DownloadContext();
         context.addOnCompleteDownload(c -> Platform.runLater(() -> this.statusLabel.setText("Unzipping")));
         context.addOnProgressExtract(zfc -> {
