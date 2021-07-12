@@ -7,6 +7,8 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.guielements.stages.MainStageHandler;
+import org.colonelkai.mod.network.DownloadContext;
 import org.colonelkai.mod.network.ZippedModDownloadTask;
 
 public class DownloadBox extends VBox {
@@ -28,9 +30,34 @@ public class DownloadBox extends VBox {
 
     public DownloadBox(ZippedModDownloadTask downloadContext) {
         this.downloadContext = downloadContext;
-        downloadContext.onComplete(c -> Platform.runLater(() -> this.statusLabel.setText("Unzipping")));
         this.progressBar.prefWidthProperty().bind(this.widthProperty());
+        init();
+    }
+
+    private void init() {
         this.update();
+        DownloadContext context = new DownloadContext();
+        context.addOnCompleteDownload(c -> Platform.runLater(() -> this.statusLabel.setText("Unzipping")));
+        context.addOnProgressExtract(zfc -> {
+            ProgressBar bar = this.getProgressBar();
+            double progress = ((double) zfc.getCount()) / zfc.getTotalCount();
+            Platform.runLater(() -> this.getStatusLabel().setText("Unzipping (" + (((int) (progress * 100.0))) + "%)"));
+            bar.setProgress(progress);
+        });
+        context.addOnCompleteExtract((v) -> Platform.runLater(() ->
+                MainStageHandler.modList.update()
+        ));
+        context.addOnProgressDownload(value -> {
+            ProgressBar bar = this.getProgressBar();
+            double progress = ((double) value) / this.downloadContext.getMod().getBytesToDownload();
+            Platform.runLater(() -> {
+                this.getStatusLabel().setText("Downloading (" + (((int) (progress * 100.0))) + "%)");
+                bar.setProgress(progress);
+            });
+
+
+        });
+        this.downloadContext.applyDownloadContext(context);
     }
 
     public Label getStatusLabel() {

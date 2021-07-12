@@ -1,19 +1,15 @@
 package org.colonelkai.guielements.nodes.downloadslist;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
-import org.colonelkai.guielements.stages.MainStageHandler;
-import org.colonelkai.mod.network.DownloadContext;
 import org.colonelkai.mod.network.Values;
 import org.colonelkai.mod.network.ZippedModDownloadTask;
 
@@ -33,46 +29,35 @@ public class DownloadsList extends VBox {
     private SortedSet<DownloadBox> getDownloads(Collection<ZippedModDownloadTask> downloadContextList) {
         System.out.println("GETTING DOWNLOAD BOXES");
 
-        List<ZippedModDownloadTask> pageContexts = new ArrayList<>(List.copyOf(downloadContextList));
+        List<ZippedModDownloadTask> pageContexts = new ArrayList<>(downloadContextList);
 
-        pageContexts.sort(Comparator.comparingLong(dc -> dc.getMod().getBytesToDownload()));
+        pageContexts.sort((m1, m2) -> {
+            if (m1.isDownloading() && m2.isDownloading()) {
+                return 0;
+            }
+            if (m1.isDownloading()) {
+                return -1;
+            }
+            if (m2.isDownloading()) {
+                return 1;
+            }
+            return Comparator.<ZippedModDownloadTask>comparingLong(m3 -> m3.getMod().getBytesToDownload()).compare(m1, m2);
+        });
 
-        if(pageContexts.size() > 5) {
+        if (pageContexts.size() > 5) {
             List<ZippedModDownloadTask> tempPageContexts = new ArrayList<>();
-            for(int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++) {
                 tempPageContexts.add(pageContexts.get(i));
             }
             pageContexts.clear();
             pageContexts.addAll(tempPageContexts);
         }
 
+        Set<DownloadBox> current = this.getChildren().stream().filter(n -> n instanceof DownloadBox).map(n -> (DownloadBox) n).collect(Collectors.toSet());
+
         return pageContexts
                 .stream()
-                .map(c -> {
-                    DownloadBox box = new DownloadBox(c);
-                    DownloadContext context = new DownloadContext();
-                    context.addOnProgressExtract(zfc -> {
-                        ProgressBar bar = box.getProgressBar();
-                        double progress = ((double) zfc.getCount()) / zfc.getTotalCount();
-                        Platform.runLater(() -> box.getStatusLabel().setText("Unzipping (" + (((int) (progress * 100.0))) + "%)"));
-                        bar.setProgress(progress);
-                    });
-                    context.addOnCompleteExtract((v) -> {
-                        System.out.println("Updating mod list");
-                        Platform.runLater(() ->
-                                MainStageHandler.modList.update()
-                        );
-                    });
-                    context.addOnProgressDownload(value -> {
-                        ProgressBar bar = box.getProgressBar();
-                        double progress = ((double) value) / c.getMod().getBytesToDownload();
-                        Platform.runLater(() -> box.getStatusLabel().setText("Downloading (" + (((int) (progress * 100.0))) + "%)"));
-                        bar.setProgress(progress);
-
-                    });
-                    c.applyDownloadContext(context);
-                    return box;
-                })
+                .map(c -> current.stream().filter(b -> b.getDownloadTask().getMod().equals(c.getMod())).findAny().orElseGet(() -> new DownloadBox(c)))
                 .collect(Collectors
                         .toCollection(() -> new TreeSet<>(Comparator.comparingLong(downloadBox -> downloadBox.getDownloadTask().getMod().getBytesToDownload()))));
     }
@@ -86,8 +71,6 @@ public class DownloadsList extends VBox {
 
     public void update() {
         ObservableList<Node> children = this.getChildren();
-        children.clear();
-
         this.setPrefHeight(300);
         this.setPrefWidth(100);
         this.setBackground(new Background(
@@ -98,11 +81,12 @@ public class DownloadsList extends VBox {
         Collection<ZippedModDownloadTask> downloadContextList = Values.MOD_TASKS;
 
         if (downloadContextList.isEmpty()) {
+            children.clear();
             children.add(this.getBlank());
-            System.out.println("balls");
         } else {
-            children.addAll(getDownloads(downloadContextList));
-            System.out.println("showing downloads");
+            SortedSet<DownloadBox> newList = getDownloads(downloadContextList);
+            children.clear();
+            children.addAll(newList);
         }
     }
 }

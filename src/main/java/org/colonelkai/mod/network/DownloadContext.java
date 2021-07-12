@@ -4,7 +4,6 @@ import org.colonelkai.tasks.getter.transfer.zip.ZipFileContext;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -19,31 +18,31 @@ public class DownloadContext {
         return this.onProgressDownload;
     }
 
-    public void addOnProgressDownload(Consumer<Long>... consumers) {
-        this.onProgressDownload.addAll(Arrays.asList(consumers));
+    public void addOnProgressDownload(Consumer<Long> consumers) {
+        this.onProgressDownload.add(consumers);
     }
 
     public List<Consumer<ZipFileContext>> getOnProgressExtract() {
         return this.onProgressExtract;
     }
 
-    public void addOnProgressExtract(Consumer<ZipFileContext>... consumers) {
-        this.onProgressExtract.addAll(Arrays.asList(consumers));
+    public void addOnProgressExtract(Consumer<ZipFileContext> consumers) {
+        this.onProgressExtract.add(consumers);
     }
 
     public List<Consumer<File>> getOnCompleteDownload() {
         return this.onCompleteDownload;
     }
 
-    public void addOnCompleteExtract(Consumer<File>... consumers) {
-        this.onCompleteExtract.addAll(Arrays.asList(consumers));
+    public void addOnCompleteExtract(Consumer<File> consumers) {
+        this.onCompleteExtract.add(consumers);
     }
 
     public List<Consumer<File>> getOnCompleteExtract() {
         return this.onCompleteExtract;
     }
 
-    public void addOnCompleteDownload(Consumer<File>... consumers) {
-        this.onCompleteDownload.addAll(Arrays.asList(consumers));
+    public void addOnCompleteDownload(Consumer<File> consumers) {
+        this.onCompleteDownload.add(consumers);
     }
 }
