@@ -1,7 +1,5 @@
 package org.colonelkai.guielements.window;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -18,9 +16,9 @@ import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.mod.Mod;
 import org.colonelkai.mod.network.DownloadContext;
-import org.colonelkai.mod.network.ZippedModDownloadTask;
 import org.colonelkai.mod.network.ModDownloader;
 import org.colonelkai.mod.network.Values;
+import org.colonelkai.mod.network.ZippedModDownloadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class ModViewBox {
 

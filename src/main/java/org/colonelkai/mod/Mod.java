@@ -51,6 +51,17 @@ public class Mod {
         this.modVersion = modVersion;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Mod mod)) {
+            return false;
+        }
+        if (!mod.getModID().equals(this.getModID())) {
+            return false;
+        }
+        return mod.getModVersion() == this.getModVersion();
+    }
+
     public void run() {
         try {
             Runtime.getRuntime().exec(

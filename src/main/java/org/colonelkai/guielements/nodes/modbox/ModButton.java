@@ -75,7 +75,9 @@ public class ModButton extends HBox {
             buttonImageView.setFitHeight(37.5);
             buttonImageView.setPreserveRatio(true);
             execButton.setGraphic(buttonImageView);
-            execButton.setOnAction(actionEvent -> new ModViewBox(mod).display());
+            execButton.setOnAction(actionEvent -> {
+                new ModViewBox(mod).display();
+            });
             this.getChildren().add(execButton);
         }
 
