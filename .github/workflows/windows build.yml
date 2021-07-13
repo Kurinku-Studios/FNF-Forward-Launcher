@@ -35,7 +35,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B "-Djar.finalName=FNFForwardLauncher" package --file pom.xml
     - name: Package to exe
-      run: jpackage --input ./target/ --name FNF-Forward-Launcher --main-jar FNFForwardLauncher.jar --type exe --icon ./src/main/resources/icon.ico --win-shortcut --win-menu
+      run: jpackage --input ./target/ --name FNF-Forward-Launcher --main-jar FNFForwardLauncher.jar --type exe --icon ./src/main/resources/icon.ico -- vendor FNF-Forward --win-dir-chooser --win-shortcut --win-menu --win-menu-group FNF-Forward
 
     - uses: actions/upload-artifact@v2
       with:
