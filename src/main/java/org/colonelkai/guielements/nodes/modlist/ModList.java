@@ -8,11 +8,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import org.colonelkai.ForwardLauncher;
 import org.colonelkai.guielements.nodes.modbox.ModBox;
 import org.colonelkai.mod.Mod;
 import org.colonelkai.mod.network.ReferenceTableHandler;
@@ -40,6 +43,9 @@ public class ModList extends HBox {
     public ModList() {
         this.setPage(1);
     }
+
+    Font fontBig = Font.loadFont(
+            ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 25);
 
     private Set<Mod> filterForSearch(Set<Mod> fullModSetUnchecked) {
         return fullModSetUnchecked
@@ -150,6 +156,7 @@ public class ModList extends HBox {
                     vbox.getChildren().add(modBox);
                 });
 
+
         // gotta set the width of all of them the same so it don't look misaligned
         DoubleProperty width = new SimpleDoubleProperty(0);
 
@@ -164,6 +171,13 @@ public class ModList extends HBox {
         width.set(width.get()+200);
 
         vbox.setAlignment(Pos.CENTER);
+
+
+        if(modList.isEmpty()) {
+            Label noModFoundLabel = new Label("                No Mods Found                ");
+            noModFoundLabel.setFont(fontBig);
+            vbox.getChildren().add(noModFoundLabel);
+        }
 
         return vbox;
     }

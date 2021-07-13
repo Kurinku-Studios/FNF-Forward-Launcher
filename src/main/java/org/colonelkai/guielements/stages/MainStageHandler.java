@@ -33,7 +33,7 @@ public class MainStageHandler {
         TextField textField = new TextField("");
         textField.setPromptText("Search funks");
         textField.setFont(MainStageHandler.searchFont);
-        textField.setOnAction(actionEvent -> {
+        textField.textProperty().addListener(actionEvent -> {
             MainStageHandler.modList.setSearchTerm(textField.getText());
             MainStageHandler.modList.setPage(1);
             MainStageHandler.modList.update();
