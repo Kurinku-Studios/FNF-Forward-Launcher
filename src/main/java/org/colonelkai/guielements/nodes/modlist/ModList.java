@@ -33,17 +33,31 @@ public class ModList extends HBox {
     int curPage;
     int maxPage;
 
+    private String searchTerm = "";
+
     List<Mod> modList = new ArrayList<>();
 
     public ModList() {
         this.setPage(1);
     }
 
+    private Set<Mod> filterForSearch(Set<Mod> fullModSetUnchecked) {
+        return fullModSetUnchecked
+                .stream()
+                .filter(mod -> (
+                        mod.getModName().toLowerCase().contains(this.getSearchTerm().toLowerCase())
+                    ||  mod.getModDev().toLowerCase().contains(this.getSearchTerm().toLowerCase(Locale.ROOT))
+                        ))
+                .collect(Collectors.toSet());
+    }
+
     // the reason we have is to update the modList and handle the page calculation stuff in a separate function :)
-    private void setPage(int page) {
+    public void setPage(int page) {
         // todo turn this into async if you somehow manage to get this piece of shit software to be popular so it doesn't
         // slow down the whole thing
-        Set<Mod> fullModSet = ReferenceTableHandler.getAllMods();
+        Set<Mod> fullModSetUnchecked = ReferenceTableHandler.getAllMods();
+
+        Set<Mod> fullModSet = filterForSearch(fullModSetUnchecked);
 
         int fullModAmount = fullModSet.size();
 
@@ -163,5 +177,15 @@ public class ModList extends HBox {
         this.getChildren().add(this.getMiddleList());
         this.getChildren().add(buttons.get(1));
     }
+
+
+    public String getSearchTerm() {
+        return searchTerm;
+    }
+
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
+    }
+
 }
 
