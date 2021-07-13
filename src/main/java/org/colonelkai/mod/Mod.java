@@ -2,9 +2,7 @@ package org.colonelkai.mod;
 
 import org.colonelkai.mod.network.Values;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -63,17 +61,30 @@ public class Mod {
     }
 
     public void run() {
-        try {
-            Runtime.getRuntime().exec(
-                    Values.FLAUNCHER_DATA_PATH + this.getModID() + File.separator + "source"
-                            + File.separator + this.execPath,
-                    null,
-                    new File(Values.FLAUNCHER_DATA_PATH + this.getModID() + File.separator + "source"
-                            + File.separator + this.execPath).getParentFile()
-            );
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        new Thread(() -> {
+            try {
+                Process process = Runtime.getRuntime().exec(
+                        Values.FLAUNCHER_DATA_PATH + this.getModID() + File.separator + "source"
+                                + File.separator + this.execPath,
+                        null,
+                        new File(Values.FLAUNCHER_DATA_PATH + this.getModID() + File.separator + "source"
+                                + File.separator + this.execPath).getParentFile()
+                );
+
+                new Thread(() -> {
+                    InputStream regularStream = process.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(regularStream));
+                    br.lines().forEach(System.out::println);
+                }).start();
+                new Thread(() -> {
+                    InputStream regularStream = process.getErrorStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(regularStream));
+                    br.lines().forEach(System.out::println);
+                }).start();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     public boolean isInstalled() {
