@@ -4,7 +4,14 @@ on:
   push:
     branches: [ main, actions ]
   workflow_dispatch:
-    
+    inputs:
+      specifiedVersion:
+        description: "specified version"
+        required: false
+      actualVersion:
+        description: "numbered version"
+        required: false
+        default: '1.0.0'
 
 jobs:
   build:
@@ -34,8 +41,21 @@ jobs:
         distribution: 'adopt'
     - name: Build with Maven
       run: mvn -B "-Djar.finalName=FNFForwardLauncher" package --file pom.xml
+    - name: create version specified
+      if: ${{github.event.inputs.specifiedVersion != null}}
+      run: java -jar target/FNFForwardLauncher.jar --gitrun ${{github.run_number}} --tagName ${{github.ref}} --specifiedVersion ${{github.event.inputs.specifiedVersion}}
+    - name: create version unspecified
+      if: ${{github.event.inputs.specifiedVersion == null}}
+      run: java -jar target/FNFForwardLauncher.jar --gitrun ${{github.run_number}} --tagName ${{github.ref}}
+    - name: Build with Maven again
+      run: mvn -B "-Djar.finalName=FNFForwardLauncher" package --file pom.xml
+    - name: Make directory
+      run: mkdir installer
+    - name: Copy file over
+      run: copy ./target/FNFForwardLauncher.jar ./installer/
+      
     - name: Package to exe
-      run: jpackage --input ./target/ --name FNF-Forward-Launcher --main-jar FNFForwardLauncher.jar --type exe --icon ./src/main/resources/icon.ico --vendor FNF-Forward --win-dir-chooser --win-shortcut --win-menu --win-menu-group FNF-Forward
+      run: jpackage --input ./installer/ --name FNF-Forward-Launcher --main-jar FNFForwardLauncher.jar --app-version ${{github.event.inputs.actualVersion}} --type exe --icon ./src/main/resources/icon.ico --vendor FNF-Forward --win-dir-chooser --win-shortcut --win-menu --win-menu-group FNF-Forward
 
     - uses: actions/upload-artifact@v2
       with:

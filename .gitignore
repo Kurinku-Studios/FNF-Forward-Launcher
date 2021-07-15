@@ -1,5 +1,6 @@
 /.idea
 /target
+/src/main/resources/meta/
 *.iml
 dependency-reduced-pom.xml
 *.exe
