@@ -8,11 +8,14 @@ import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import org.colonelkai.ForwardLauncher;
 import org.colonelkai.guielements.nodes.modbox.ModBox;
 import org.colonelkai.mod.Mod;
 import org.colonelkai.mod.network.ReferenceTableHandler;
@@ -33,17 +36,34 @@ public class ModList extends HBox {
     int curPage;
     int maxPage;
 
+    private String searchTerm = "";
+
     List<Mod> modList = new ArrayList<>();
 
     public ModList() {
         this.setPage(1);
     }
 
+    Font fontBig = Font.loadFont(
+            ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 25);
+
+    private Set<Mod> filterForSearch(Set<Mod> fullModSetUnchecked) {
+        return fullModSetUnchecked
+                .stream()
+                .filter(mod -> (
+                        mod.getModName().toLowerCase().contains(this.getSearchTerm().toLowerCase())
+                    ||  mod.getModDev().toLowerCase().contains(this.getSearchTerm().toLowerCase(Locale.ROOT))
+                        ))
+                .collect(Collectors.toSet());
+    }
+
     // the reason we have is to update the modList and handle the page calculation stuff in a separate function :)
-    private void setPage(int page) {
+    public void setPage(int page) {
         // todo turn this into async if you somehow manage to get this piece of shit software to be popular so it doesn't
         // slow down the whole thing
-        Set<Mod> fullModSet = ReferenceTableHandler.getAllMods();
+        Set<Mod> fullModSetUnchecked = ReferenceTableHandler.getAllMods();
+
+        Set<Mod> fullModSet = filterForSearch(fullModSetUnchecked);
 
         int fullModAmount = fullModSet.size();
 
@@ -136,6 +156,7 @@ public class ModList extends HBox {
                     vbox.getChildren().add(modBox);
                 });
 
+
         // gotta set the width of all of them the same so it don't look misaligned
         DoubleProperty width = new SimpleDoubleProperty(0);
 
@@ -151,6 +172,13 @@ public class ModList extends HBox {
 
         vbox.setAlignment(Pos.CENTER);
 
+
+        if(modList.isEmpty()) {
+            Label noModFoundLabel = new Label("                No Mods Found                ");
+            noModFoundLabel.setFont(fontBig);
+            vbox.getChildren().add(noModFoundLabel);
+        }
+
         return vbox;
     }
 
@@ -163,5 +191,15 @@ public class ModList extends HBox {
         this.getChildren().add(this.getMiddleList());
         this.getChildren().add(buttons.get(1));
     }
+
+
+    public String getSearchTerm() {
+        return searchTerm;
+    }
+
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
+    }
+
 }
 

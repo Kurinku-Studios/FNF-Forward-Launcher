@@ -1,12 +1,15 @@
 package org.colonelkai.guielements.stages;
 
+import com.sun.tools.javac.Main;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.guielements.nodes.downloadslist.DownloadsList;
@@ -21,8 +24,21 @@ public class MainStageHandler {
     public static ModList modList;
     public static DownloadsList downloadsList = new DownloadsList();
 
+    private static Font searchFont = Font.loadFont(
+            ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 20);
+
     private static VBox rightSide() {
-        VBox vbox = new VBox(25);
+        VBox vbox = new VBox(10);
+
+        TextField textField = new TextField("");
+        textField.setPromptText("Search funks");
+        textField.setFont(MainStageHandler.searchFont);
+        textField.textProperty().addListener(actionEvent -> {
+            MainStageHandler.modList.setSearchTerm(textField.getText());
+            MainStageHandler.modList.setPage(1);
+            MainStageHandler.modList.update();
+        });
+        vbox.getChildren().add(textField);
 
         // refresh button yes yes
         Button refreshButton = new Button();
