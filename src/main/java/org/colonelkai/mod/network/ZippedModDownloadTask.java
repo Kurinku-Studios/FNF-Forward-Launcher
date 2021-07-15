@@ -16,6 +16,7 @@ public class ZippedModDownloadTask extends DownloadTask<File> {
     private final Mod mod;
     private boolean isDownloading;
     private final UnzipTask unzip;
+    private Thread thread;
 
     public ZippedModDownloadTask(Mod mod, Function<Mod, URL> input, File downloadTo) throws IOException {
         super(input.apply(mod).openStream(), new FileOutputStream(downloadTo), (os) -> downloadTo);
@@ -44,7 +45,20 @@ public class ZippedModDownloadTask extends DownloadTask<File> {
         return this.mod;
     }
 
+    public Thread getThread() {
+        return this.thread;
+    }
+
     @Override
+    public Thread getAsynced() {
+        Thread thread = super.getAsynced();
+
+        this.thread = thread;
+
+        return thread;
+    }
+
+        @Override
     public File get() {
         this.isDownloading = true;
         File file = super.get();
