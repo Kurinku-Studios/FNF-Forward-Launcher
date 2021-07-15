@@ -37,7 +37,7 @@ public class DownloadTask<T> extends AbstractTransferTask<T, Long> {
     @Override
     public T get() {
         ReadableByteChannel readableByteChannel = Channels.newChannel(this.input);
-        WrappedReadableByteChannel wrappedReadableByteChannel = new WrappedReadableByteChannel(readableByteChannel, this.processEvents);
+        InteruptableReadableByteChannel wrappedReadableByteChannel = new InteruptableReadableByteChannel(readableByteChannel, this.processEvents);
         FileChannel channel = this.output.getChannel();
         try {
             channel.transferFrom(wrappedReadableByteChannel, 0, Long.MAX_VALUE);
@@ -45,6 +45,8 @@ public class DownloadTask<T> extends AbstractTransferTask<T, Long> {
         } catch (IOException e) {
             this.exceptionEvents.parallelStream().forEach(c -> c.accept(e));
             throw new RuntimeErrorException(new Error(e));
+        } catch (IllegalStateException e) {
+            
         }
         T mapped = this.mapper.apply(this.output);
         this.completeEvents.parallelStream().forEach(e -> e.accept(mapped));

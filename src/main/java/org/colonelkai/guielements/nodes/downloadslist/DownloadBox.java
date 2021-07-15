@@ -2,16 +2,19 @@ package org.colonelkai.guielements.nodes.downloadslist;
 
 import javafx.application.Platform;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.guielements.stages.MainStageHandler;
 import org.colonelkai.mod.network.DownloadContext;
+import org.colonelkai.mod.network.Values;
 import org.colonelkai.mod.network.ZippedModDownloadTask;
 
-public class DownloadBox extends VBox {
+public class DownloadBox extends HBox {
 
     /*
     Have the progress bar on the bottom
@@ -23,6 +26,7 @@ public class DownloadBox extends VBox {
     private final ZippedModDownloadTask downloadContext;
     private final ProgressBar progressBar = new ProgressBar(0);
     private final Label statusLabel = new Label("Downloading");
+    private VBox vbox;
 
     private final Font fontSmall = Font.loadFont(
             ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 20
@@ -86,6 +90,22 @@ public class DownloadBox extends VBox {
         return box;
     }
 
+
+    private Button getCancelButton() {
+        Button cancelButton = new Button("X");
+        cancelButton.setFont(this.fontSmall);
+        cancelButton.setAlignment(Pos.CENTER);
+        cancelButton.prefHeightProperty().bind(this.vbox.heightProperty());
+
+        cancelButton.setOnAction(actionEvent -> {
+            this.downloadContext.getAsynced().interrupt();
+            Values.MOD_TASKS.remove(this.downloadContext);
+            MainStageHandler.downloadsList.update();
+        });
+
+        return cancelButton;
+    }
+
     public ProgressBar getProgressBar() {
         return progressBar;
     }
@@ -93,7 +113,13 @@ public class DownloadBox extends VBox {
     public void update() {
         this.getChildren().clear();
 
-        this.getChildren().add(topVBox());
-        this.getChildren().add(getProgressBar());
+        VBox vbox = new VBox();
+        this.vbox = vbox;
+
+        vbox.getChildren().add(topVBox());
+        vbox.getChildren().add(getProgressBar());
+
+        this.getChildren().add(vbox);
+        this.getChildren().add(getCancelButton());
     }
 }
