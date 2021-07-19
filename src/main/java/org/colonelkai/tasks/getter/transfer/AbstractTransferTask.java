@@ -10,6 +10,7 @@ public abstract class AbstractTransferTask<T, P> implements TransferTask<T, P> {
     protected final Set<Consumer<P>> processEvents = new HashSet<>();
     protected final Set<Consumer<Exception>> exceptionEvents = new HashSet<>();
 
+
     @Override
     public Set<Consumer<Exception>> getExceptionHandlers() {
         return this.exceptionEvents;
@@ -20,6 +21,7 @@ public abstract class AbstractTransferTask<T, P> implements TransferTask<T, P> {
         return this.completeEvents;
     }
 
+
     @Override
     public void onComplete(Consumer<T> consumer) {
         this.completeEvents.add(consumer);
@@ -28,6 +30,10 @@ public abstract class AbstractTransferTask<T, P> implements TransferTask<T, P> {
     @Override
     public void onException(Consumer<Exception> consumer) {
         this.exceptionEvents.add(consumer);
+    }
+  
+    public void onExceptionThrown(Consumer<Exception> e) {
+        this.exceptionEvents.add(e);
     }
 
     @Override

@@ -36,7 +36,7 @@ public class DownloadTask<T> extends AbstractTransferTask<T, Long> {
     @Override
     public T get() throws IOException {
         ReadableByteChannel readableByteChannel = Channels.newChannel(this.input);
-        WrappedReadableByteChannel wrappedReadableByteChannel = new WrappedReadableByteChannel(readableByteChannel, this.processEvents);
+        InteruptableReadableByteChannel wrappedReadableByteChannel = new InteruptableReadableByteChannel(readableByteChannel, this.processEvents);
         FileChannel channel = this.output.getChannel();
         channel.transferFrom(wrappedReadableByteChannel, 0, Long.MAX_VALUE);
         this.output.flush();
