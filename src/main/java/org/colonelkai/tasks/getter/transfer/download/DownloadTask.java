@@ -42,11 +42,9 @@ public class DownloadTask<T> extends AbstractTransferTask<T, Long> {
         try {
             channel.transferFrom(wrappedReadableByteChannel, 0, Long.MAX_VALUE);
             this.output.flush();
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
             this.exceptionEvents.parallelStream().forEach(c -> c.accept(e));
             throw new RuntimeErrorException(new Error(e));
-        } catch (IllegalStateException e) {
-            
         }
         T mapped = this.mapper.apply(this.output);
         this.completeEvents.parallelStream().forEach(e -> e.accept(mapped));
