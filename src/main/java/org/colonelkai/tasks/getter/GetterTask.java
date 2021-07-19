@@ -1,16 +1,29 @@
 package org.colonelkai.tasks.getter;
 
+import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
-public interface GetterTask<T> extends Supplier<T> {
+public interface GetterTask<T> {
 
     void onComplete(Consumer<T> consumer);
 
+    void onException(Consumer<Exception> consumer);
+
+    Set<Consumer<Exception>> getExceptionHandlers();
+
+    Set<Consumer<T>> getCompleteHandlers();
+
+    T get() throws Exception;
+
     default Thread getAsynced() {
-        Class<?> clazz = this.getClass();
-        System.out.println("t: " + clazz.getName());
-        return new Thread(this::get);
+        return new Thread(() -> {
+            try {
+                T value = this.get();
+                this.getCompleteHandlers().parallelStream().forEach(c -> c.accept(value));
+            } catch (Exception e) {
+                this.getExceptionHandlers().parallelStream().forEach(c -> c.accept(e));
+            }
+        });
     }
 
 }

@@ -50,16 +50,7 @@ public class ZippedModDownloadTask extends DownloadTask<File> {
     }
 
     @Override
-    public Thread getAsynced() {
-        Thread thread = super.getAsynced();
-
-        this.thread = thread;
-
-        return thread;
-    }
-
-        @Override
-    public File get() {
+    public File get() throws IOException {
         this.isDownloading = true;
         File file = super.get();
         this.isDownloading = false;
