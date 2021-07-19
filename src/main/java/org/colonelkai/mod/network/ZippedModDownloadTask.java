@@ -45,7 +45,7 @@ public class ZippedModDownloadTask extends DownloadTask<File> {
     }
 
     @Override
-    public File get() {
+    public File get() throws IOException {
         this.isDownloading = true;
         File file = super.get();
         this.isDownloading = false;

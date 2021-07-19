@@ -2,7 +2,6 @@ package org.colonelkai.tasks.getter.transfer.download;
 
 import org.colonelkai.tasks.getter.transfer.AbstractTransferTask;
 
-import javax.management.RuntimeErrorException;
 import java.io.*;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -35,17 +34,12 @@ public class DownloadTask<T> extends AbstractTransferTask<T, Long> {
     }
 
     @Override
-    public T get() {
+    public T get() throws IOException {
         ReadableByteChannel readableByteChannel = Channels.newChannel(this.input);
         WrappedReadableByteChannel wrappedReadableByteChannel = new WrappedReadableByteChannel(readableByteChannel, this.processEvents);
         FileChannel channel = this.output.getChannel();
-        try {
-            channel.transferFrom(wrappedReadableByteChannel, 0, Long.MAX_VALUE);
-            this.output.flush();
-        } catch (IOException e) {
-            this.exceptionEvents.parallelStream().forEach(c -> c.accept(e));
-            throw new RuntimeErrorException(new Error(e));
-        }
+        channel.transferFrom(wrappedReadableByteChannel, 0, Long.MAX_VALUE);
+        this.output.flush();
         T mapped = this.mapper.apply(this.output);
         this.completeEvents.parallelStream().forEach(e -> e.accept(mapped));
         return mapped;

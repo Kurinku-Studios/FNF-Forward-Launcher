@@ -23,6 +23,22 @@ public class AwaitGetterTask implements GetterTask<Boolean> {
     }
 
     @Override
+    @Deprecated
+    public void onException(Consumer<Exception> consumer) {
+        throw new RuntimeException("Task does not throw exception");
+    }
+
+    @Override
+    public Set<Consumer<Exception>> getExceptionHandlers() {
+        return Collections.emptySet();
+    }
+
+    @Override
+    public Set<Consumer<Boolean>> getCompleteHandlers() {
+        return this.completeEvents;
+    }
+
+    @Override
     public Boolean get() {
         Set<GetterTask<?>> tasks = Collections.synchronizedSet(new HashSet<>(this.tasks));
         this.tasks.parallelStream().forEach(getter -> {
@@ -30,7 +46,6 @@ public class AwaitGetterTask implements GetterTask<Boolean> {
         });
         while (!tasks.isEmpty()) {
         }
-        this.completeEvents.parallelStream().forEach(e -> e.accept(true));
         return true;
     }
 }
