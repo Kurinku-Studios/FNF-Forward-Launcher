@@ -98,7 +98,7 @@ public class DownloadBox extends HBox {
         cancelButton.prefHeightProperty().bind(this.vbox.heightProperty());
 
         cancelButton.setOnAction(actionEvent -> {
-            this.downloadContext.getThread().interrupt();
+            this.downloadContext.getAsynced().interrupt();
             Values.MOD_TASKS.remove(this.downloadContext);
             MainStageHandler.downloadsList.update();
         });
