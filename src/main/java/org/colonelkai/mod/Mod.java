@@ -1,6 +1,7 @@
 package org.colonelkai.mod;
 
 import org.colonelkai.mod.network.Values;
+import org.colonelkai.os.OperatingSystems;
 
 import java.io.*;
 import java.net.URL;
@@ -8,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class Mod {
     private String modID;
@@ -47,6 +49,12 @@ public class Mod {
         this.modID = modID;
         this.modName = modName;
         this.modVersion = modVersion;
+    }
+
+    public boolean isSupportedOnPlatform() {
+        String path = this.execPath.toLowerCase();
+        String[] fileType = OperatingSystems.valueOf().getOS().getExecutableFileType();
+        return Stream.of(fileType).anyMatch(ft -> path.endsWith("." + ft.toLowerCase()));
     }
 
     @Override

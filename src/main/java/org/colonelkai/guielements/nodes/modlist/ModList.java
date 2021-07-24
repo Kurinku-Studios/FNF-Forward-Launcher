@@ -52,8 +52,8 @@ public class ModList extends HBox {
                 .stream()
                 .filter(mod -> (
                         mod.getModName().toLowerCase().contains(this.getSearchTerm().toLowerCase())
-                    ||  mod.getModDev().toLowerCase().contains(this.getSearchTerm().toLowerCase(Locale.ROOT))
-                        ))
+                                || mod.getModDev().toLowerCase().contains(this.getSearchTerm().toLowerCase(Locale.ROOT))
+                ))
                 .collect(Collectors.toSet());
     }
 
@@ -63,22 +63,25 @@ public class ModList extends HBox {
         // slow down the whole thing
         Set<Mod> fullModSetUnchecked = ReferenceTableHandler.getAllMods();
 
-        Set<Mod> fullModSet = filterForSearch(fullModSetUnchecked);
+        Set<Mod> fullModSet = filterForSearch(fullModSetUnchecked)
+                .stream()
+                .filter(Mod::isSupportedOnPlatform)
+                .collect(Collectors.toSet());
 
         int fullModAmount = fullModSet.size();
 
         // get the max page no, and if it has more mods than perfectly divisible by 5, accommodate for those extra mods by
         // adding another page
         this.maxPage = (fullModAmount - (fullModAmount % 5)) / 5; // look at this shit, doing MATH!
-        if(fullModAmount % 5 != 0) {
+        if (fullModAmount % 5 != 0) {
             this.maxPage += 1;
         }
 
         this.curPage = page;
-        if(this.curPage > this.maxPage) {
+        if (this.curPage > this.maxPage) {
             this.curPage = this.maxPage;
         }
-        if(this.curPage < 1) {
+        if (this.curPage < 1) {
             this.curPage = 1;
         }
 
@@ -86,7 +89,7 @@ public class ModList extends HBox {
         int endIndex = startIndex + 4;
 
         // if the index extends too much, put it in it's place
-        if((endIndex + 1) > fullModAmount) {
+        if ((endIndex + 1) > fullModAmount) {
             endIndex = fullModSet.size() - 1;
         }
 
@@ -98,7 +101,7 @@ public class ModList extends HBox {
 
         this.modList.clear();
 
-        for(int i = startIndex; i <= endIndex; i++) {
+        for (int i = startIndex; i <= endIndex; i++) {
             modList.add(fullModList.get(i));
         }
     }
@@ -117,7 +120,7 @@ public class ModList extends HBox {
         leftButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                modList.setPage(curPage-1);
+                modList.setPage(curPage - 1);
                 modList.update();
             }
         });
@@ -131,7 +134,7 @@ public class ModList extends HBox {
         rightButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                modList.setPage(curPage+1);
+                modList.setPage(curPage + 1);
                 modList.update();
             }
         });
@@ -145,7 +148,7 @@ public class ModList extends HBox {
         VBox vbox = new VBox();
 
         vbox.setBackground(new Background(
-                new BackgroundFill(Color.rgb(220,220,220), null, null)
+                new BackgroundFill(Color.rgb(220, 220, 220), null, null)
         ));
 
         this.modList.stream()
@@ -163,17 +166,17 @@ public class ModList extends HBox {
         for (Node node : vbox.getChildren()) {
             ModBox modBox = (ModBox) node;
 
-            if(modBox.getTitle().widthProperty().get() > width.get()) {
+            if (modBox.getTitle().widthProperty().get() > width.get()) {
                 width.set(modBox.getTitle().widthProperty().get());
             }
             modBox.getTitle().prefWidthProperty().bind(width);
         }
-        width.set(width.get()+200);
+        width.set(width.get() + 200);
 
         vbox.setAlignment(Pos.CENTER);
 
 
-        if(modList.isEmpty()) {
+        if (modList.isEmpty()) {
             Label noModFoundLabel = new Label("                No Mods Found                ");
             noModFoundLabel.setFont(fontBig);
             vbox.getChildren().add(noModFoundLabel);
@@ -186,7 +189,7 @@ public class ModList extends HBox {
         this.getChildren().clear();
 
         List<Button> buttons = this.getNavButtons();
-        
+
         this.getChildren().add(buttons.get(0));
         this.getChildren().add(this.getMiddleList());
         this.getChildren().add(buttons.get(1));
