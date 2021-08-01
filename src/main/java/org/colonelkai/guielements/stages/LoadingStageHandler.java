@@ -20,6 +20,7 @@ import org.colonelkai.mod.network.ModDownloader;
 import org.colonelkai.mod.network.ReferenceTableHandler;
 
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Objects;
 import java.util.Set;
 
@@ -46,7 +47,7 @@ public class LoadingStageHandler {
     }
 
     private static Rectangle createRect() {
-        Rectangle rect = new Rectangle(400,150);
+        Rectangle rect = new Rectangle(400, 150);
         rect.setFill(Color.rgb(100, 0, 0));
         rect.setArcHeight(10.0);
         rect.setArcWidth(10.0);
@@ -104,6 +105,9 @@ public class LoadingStageHandler {
         Set<Mod> oldModSet = ReferenceTableHandler.getAllMods();
         try {
             ReferenceTableHandler.updateReferenceTable();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            loadingText.setText("!! Error connecting, running in offline mode. !!!");
         } catch (IOException e) {
             e.printStackTrace();
             loadingText.setText("!!! Error getting latest mod data. !!!");
