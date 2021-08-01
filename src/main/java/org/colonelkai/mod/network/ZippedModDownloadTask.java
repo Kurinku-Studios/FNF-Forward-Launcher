@@ -46,6 +46,9 @@ public class ZippedModDownloadTask extends DownloadTask<File> {
     }
 
     public Thread getThread() {
+        if (this.thread == null) {
+            throw new RuntimeException(new Error("Can not get thread if called syncedly"));
+        }
         return this.thread;
     }
 
@@ -55,6 +58,13 @@ public class ZippedModDownloadTask extends DownloadTask<File> {
         File file = super.get();
         this.isDownloading = false;
         return file;
+    }
+
+    @Override
+    public Thread getAsynced() {
+        Thread thread = super.getAsynced();
+        this.thread = thread;
+        return thread;
     }
 
     public static <T> DownloadTask<T> of(URL url, File file, Function<OutputStream, T> mapper) throws IOException {
