@@ -9,12 +9,16 @@ public class Settings {
     private Path defaultInstallFolder;
     // there isn't much right now but we will add more surely.
 
-    // for settings display.
-    public HashMap<String, String> displayNames = new HashMap();
 
     public Settings() {
-        this.displayNames.put("darkMode", "Dark Mode");
-        this.displayNames.put("defaultInstallFolder", "Default Install Folder");
+    }
+
+    public HashMap<String, String> getSettingDisplayNames() {
+        HashMap<String, String> displayNames = new HashMap();
+        displayNames.put("darkMode", "Dark Mode");
+        displayNames.put("defaultInstallFolder", "Default Install Folder");
+
+        return displayNames;
     }
 
     // TODO: save/load

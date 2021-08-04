@@ -57,7 +57,7 @@ public class SettingsScrollPane extends ScrollPane {
                 hbox.setPrefWidth(this.getWidth());
 
 
-                String propertyDisplayName = this.temporarySettings.displayNames.get(propertyDescriptor.getName());
+                String propertyDisplayName = this.temporarySettings.getSettingDisplayNames().get(propertyDescriptor.getName());
 
                 Label propertyLabel = new Label(propertyDisplayName);
                 propertyLabel.setFont(font);
