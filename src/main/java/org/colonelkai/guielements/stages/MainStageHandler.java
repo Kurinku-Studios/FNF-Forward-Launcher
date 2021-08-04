@@ -58,8 +58,13 @@ public class MainStageHandler {
             MainStageHandler.modList.update();
         });
         rightSideButtons.getChildren().add(refreshButton);
-        Button settingsButton = new Button("L");
+        Button settingsButton = new Button();
+        ImageView settingsImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/settings.png")));
+        settingsImageView.setFitWidth(70);
+        settingsImageView.setPreserveRatio(true);
         settingsButton.setFont(searchFont);
+        settingsButton.setGraphic(settingsImageView);
+        settingsButton.setStyle("-fx-background-color: transparent;");
         settingsButton.setOnAction(actionEvent -> {
             SettingsWindow settingsWindow = new SettingsWindow();
             settingsWindow.show();
@@ -100,7 +105,7 @@ public class MainStageHandler {
 
         // stage.initStyle(StageStyle.UTILITY);
         stage.setResizable(true);
-        stage.setWidth(780);
+        stage.setWidth(850);
         stage.setHeight(500);
         stage.getIcons().add(new Image(
                 Objects.requireNonNull(ForwardLauncher.class.getResourceAsStream("/icon.png"))));
