@@ -1,6 +1,7 @@
 package org.colonelkai.mod.network;
 
 import javafx.application.Platform;
+import org.colonelkai.application.Values;
 import org.colonelkai.guielements.stages.MainStageHandler;
 import org.colonelkai.mod.Mod;
 import org.colonelkai.tasks.getter.transfer.download.DownloadTask;

@@ -17,7 +17,7 @@ import org.colonelkai.ForwardLauncher;
 import org.colonelkai.mod.Mod;
 import org.colonelkai.mod.network.DownloadContext;
 import org.colonelkai.mod.network.ModDownloader;
-import org.colonelkai.mod.network.Values;
+import org.colonelkai.application.Values;
 import org.colonelkai.mod.network.ZippedModDownloadTask;
 
 import java.io.File;

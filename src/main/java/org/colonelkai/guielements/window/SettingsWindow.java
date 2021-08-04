@@ -1,12 +1,14 @@
 package org.colonelkai.guielements.window;
 
 
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.guielements.nodes.settings.SettingsScrollPane;
 
 import java.util.Objects;
 
@@ -34,7 +36,12 @@ public class SettingsWindow extends Stage {
 
         // add things to the main root VBox now :)
 
+        SettingsScrollPane settingsScrollPane = new SettingsScrollPane();
+        settingsScrollPane.setMaxWidth(this.getWidth() - 80);
 
+        root.getChildren().add(settingsScrollPane);
+
+        root.setAlignment(Pos.CENTER);
         return root;
     }
 

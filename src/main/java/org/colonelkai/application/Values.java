@@ -1,4 +1,6 @@
-package org.colonelkai.mod.network;
+package org.colonelkai.application;
+
+import org.colonelkai.mod.network.ZippedModDownloadTask;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,4 +12,6 @@ public interface Values {
             "FLauncherData" + File.separator;
 
     Collection<ZippedModDownloadTask> MOD_TASKS = new ArrayList<>();
+
+    Settings settings = new Settings();
 }

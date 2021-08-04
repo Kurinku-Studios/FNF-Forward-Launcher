@@ -10,7 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
-import org.colonelkai.mod.network.Values;
+import org.colonelkai.application.Values;
 import org.colonelkai.mod.network.ZippedModDownloadTask;
 
 import java.util.*;
