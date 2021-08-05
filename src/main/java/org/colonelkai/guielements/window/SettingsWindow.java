@@ -38,6 +38,7 @@ public class SettingsWindow extends Stage {
 
         SettingsScrollPane settingsScrollPane = new SettingsScrollPane();
         settingsScrollPane.setMaxWidth(this.getWidth() - 80);
+        settingsScrollPane.prefHeightProperty().bind(this.heightProperty().multiply(0.75));
 
         root.getChildren().add(settingsScrollPane);
 

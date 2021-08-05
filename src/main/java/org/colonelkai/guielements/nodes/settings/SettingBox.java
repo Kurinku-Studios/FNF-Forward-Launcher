@@ -3,8 +3,12 @@ package org.colonelkai.guielements.nodes.settings;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.application.Settings;
@@ -14,45 +18,60 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 
 public class SettingBox<T> extends HBox {
-    private Type type;
+    private final Type type;
+    private final String displayName;
     private T setting;
-    private String displayName;
-    // I feel like this is bad code, and it probably is.
-    PropertyDescriptor propertyDescriptor;
-    Settings temporarySettings;
+    private PropertyDescriptor propertyDescriptor;
+    private Settings temporarySettings;
 
     Font font = Font.loadFont(
             ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 20);
 
-    public SettingBox(T setting, String displayName, Type type, PropertyDescriptor propertyDescriptor, Settings temporarySettings) throws InvocationTargetException, IllegalAccessException {
+    public SettingBox(
+            T setting, String displayName, Type type, PropertyDescriptor propertyDescriptor, Settings temporarySettings, VBox vb) throws InvocationTargetException, IllegalAccessException {
         this.setting = setting;
         this.displayName = displayName;
         this.type = type;
         this.propertyDescriptor = propertyDescriptor;
         this.temporarySettings = temporarySettings;
+
+        this.prefWidthProperty().bind(vb.widthProperty());
+
         this.update();
     }
 
     public void update() throws InvocationTargetException, IllegalAccessException {
+        this.getChildren().clear();
+
+        // ---- Anchor Panes ----
+        AnchorPane apLeft = new AnchorPane();
+        HBox.setHgrow(apLeft, Priority.ALWAYS);//Make AnchorPane apLeft grow horizontally
+        AnchorPane apRight = new AnchorPane();
+        this.getChildren().add(apLeft);
+        this.getChildren().add(apRight);
 
         // ---- LABEL ----
         Label label = new Label(displayName);
         label.setFont(font);
-        this.getChildren().add(label);
+        apLeft.getChildren().add(label);
 
         // ---- BOOLEAN ----
         if(this.type == boolean.class) {
-            System.out.println("yo mama");
             ToggleButton toggleButton = new ToggleButton();
             toggleButton.setFont(font);
-            if((boolean) propertyDescriptor.getReadMethod().invoke(this.temporarySettings)) {
+            boolean curValue = (boolean) propertyDescriptor.getReadMethod().invoke(this.temporarySettings);
+            if(curValue) {
                 toggleButton.setText("On");
             } else {
                 toggleButton.setText("Off");
             }
             toggleButton.setOnAction(actionEvent -> {
                 try {
-                    propertyDescriptor.getWriteMethod().invoke(this.temporarySettings, toggleButton.isSelected());
+                    if(curValue) {
+                        propertyDescriptor.getWriteMethod().invoke(this.temporarySettings, false);
+                    } else {
+                        propertyDescriptor.getWriteMethod().invoke(this.temporarySettings, true);
+                    }
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
@@ -63,20 +82,12 @@ public class SettingBox<T> extends HBox {
                     e.printStackTrace();
                 }
             });
-            this.getChildren().add(toggleButton);
+            apRight.getChildren().add(toggleButton);
 
 
 
         }
 
-
-        int componentWidth = 0;
-        for(Node node : this.getChildren()){
-            Labeled labeled = (Labeled) node;
-            componentWidth += labeled.getWidth();
-        }
-
-        this.setSpacing((double) this.getWidth() - (componentWidth));
     }
 
 }

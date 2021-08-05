@@ -1,5 +1,6 @@
 package org.colonelkai.guielements.nodes.settings;
 
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
@@ -34,6 +35,9 @@ public class SettingsScrollPane extends ScrollPane {
     }
     public void update() {
         VBox root = new VBox();
+        root.getChildren().removeAll();
+        root.setPadding(new Insets(10));
+        root.prefWidthProperty().bind(this.widthProperty().subtract(15));
         this.setContent(root);
 
         this.setHbarPolicy(ScrollBarPolicy.NEVER);
@@ -58,7 +62,7 @@ public class SettingsScrollPane extends ScrollPane {
                 Type type = propertyDescriptor.getPropertyType();
 
                 // let the generic class handle the rest
-                this.getChildren().add(new SettingBox<>(attrib.getClass(), propertyDisplayName, type, propertyDescriptor, this.temporarySettings));
+                root.getChildren().add(new SettingBox<>(attrib.getClass(), propertyDisplayName, type, propertyDescriptor, this.temporarySettings, root));
 
             }
         } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
