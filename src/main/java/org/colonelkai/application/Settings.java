@@ -1,12 +1,15 @@
 package org.colonelkai.application;
 
+import org.colonelkai.ForwardLauncher;
+
 import java.nio.file.Path;
 import java.util.HashMap;
 
 public class Settings {
     // all of the settings :)
-    private boolean isDarkMode;
-    private Path defaultInstallFolder;
+    // default values?
+    private boolean isDarkMode = false;
+    private Path defaultInstallFolder = Path.of("test");
     // there isn't much right now but we will add more surely.
 
 

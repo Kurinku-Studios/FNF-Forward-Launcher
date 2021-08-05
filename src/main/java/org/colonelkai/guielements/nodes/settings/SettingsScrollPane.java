@@ -16,6 +16,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 public class SettingsScrollPane extends ScrollPane {
 
@@ -52,57 +53,15 @@ public class SettingsScrollPane extends ScrollPane {
                     continue;
                 }
 
-                // we want the value name and the switch/setter to be on the opposite sides so we do this.
-                HBox hbox = new HBox();
-                hbox.setPrefWidth(this.getWidth());
-
-
                 String propertyDisplayName = this.temporarySettings.getSettingDisplayNames().get(propertyDescriptor.getName());
+                Object attrib = propertyDescriptor.getReadMethod().invoke(this.temporarySettings);
+                Type type = propertyDescriptor.getPropertyType();
 
-                Label propertyLabel = new Label(propertyDisplayName);
-                propertyLabel.setFont(font);
-
-                hbox.getChildren().add(propertyLabel);
-
-                Class<?> type = propertyDescriptor.getPropertyType();
-
-                if(type == boolean.class) {
-                    ToggleButton toggleButton = new ToggleButton();
-                    toggleButton.setFont(font);
-                    if((boolean) propertyDescriptor.getReadMethod().invoke(this.temporarySettings)) {
-                        toggleButton.setText("On");
-                    } else {
-                        toggleButton.setText("Off");
-                    }
-                    toggleButton.setOnAction(actionEvent -> {
-                        try {
-                            propertyDescriptor.getWriteMethod().invoke(this.temporarySettings, toggleButton.isSelected());
-                        } catch (IllegalAccessException | InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
-                        // I don't know if this update call is necessary
-                        this.update();
-                    });
-                    hbox.getChildren().add(toggleButton);
-
-                }
-
-                int componentWidth = 0;
-                for(Node node : hbox.getChildren()){
-                    Labeled labeled = (Labeled) node;
-                    componentWidth += labeled.getWidth();
-                }
-
-                hbox.setSpacing((double) this.getWidth() - (componentWidth));
-                root.getChildren().add(hbox);
+                // let the generic class handle the rest
+                this.getChildren().add(new SettingBox<>(attrib.getClass(), propertyDisplayName, type, propertyDescriptor, this.temporarySettings));
 
             }
-        // don't blame/praise me, IntelliJ did this.
-        } catch (IntrospectionException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+        } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
             e.printStackTrace();
         }
 
