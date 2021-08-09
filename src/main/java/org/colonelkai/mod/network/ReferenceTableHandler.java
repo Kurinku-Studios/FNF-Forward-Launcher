@@ -1,5 +1,6 @@
 package org.colonelkai.mod.network;
 
+import org.colonelkai.application.Values;
 import org.colonelkai.mod.Mod;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

@@ -11,7 +11,7 @@ import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.guielements.stages.MainStageHandler;
 import org.colonelkai.mod.network.DownloadContext;
-import org.colonelkai.mod.network.Values;
+import org.colonelkai.application.Values;
 import org.colonelkai.mod.network.ZippedModDownloadTask;
 
 public class DownloadBox extends HBox {

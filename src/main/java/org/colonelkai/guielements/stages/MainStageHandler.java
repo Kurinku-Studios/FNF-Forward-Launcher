@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.guielements.nodes.downloadslist.DownloadsList;
 import org.colonelkai.guielements.nodes.modlist.ModList;
+import org.colonelkai.guielements.window.SettingsWindow;
 import org.colonelkai.mod.network.ReferenceTableHandler;
 
 import java.io.IOException;
@@ -41,6 +42,7 @@ public class MainStageHandler {
         vbox.getChildren().add(textField);
 
         // refresh button yes yes
+        HBox rightSideButtons = new HBox();
         Button refreshButton = new Button();
         ImageView buttonImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/refresh_button.png")));
         buttonImageView.setFitWidth(200);
@@ -55,7 +57,22 @@ public class MainStageHandler {
             }
             MainStageHandler.modList.update();
         });
-        vbox.getChildren().add(refreshButton);
+        rightSideButtons.getChildren().add(refreshButton);
+        Button settingsButton = new Button();
+        ImageView settingsImageView = new ImageView(new Image(ForwardLauncher.class.getResourceAsStream("/buttons/settings.png")));
+        settingsImageView.setFitWidth(70);
+        settingsImageView.setPreserveRatio(true);
+        settingsButton.setFont(searchFont);
+        settingsButton.setGraphic(settingsImageView);
+        settingsButton.setStyle("-fx-background-color: transparent;");
+        settingsButton.setOnAction(actionEvent -> {
+            SettingsWindow settingsWindow = new SettingsWindow();
+            settingsWindow.show();
+        });
+        rightSideButtons.getChildren().add(settingsButton);
+
+        vbox.getChildren().add(rightSideButtons);
+
 
         // download list
         DownloadsList downloadsList = new DownloadsList();
@@ -88,7 +105,7 @@ public class MainStageHandler {
 
         // stage.initStyle(StageStyle.UTILITY);
         stage.setResizable(true);
-        stage.setWidth(740);
+        stage.setWidth(850);
         stage.setHeight(500);
         stage.getIcons().add(new Image(
                 Objects.requireNonNull(ForwardLauncher.class.getResourceAsStream("/icon.png"))));

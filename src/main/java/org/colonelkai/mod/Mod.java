@@ -1,6 +1,6 @@
 package org.colonelkai.mod;
 
-import org.colonelkai.mod.network.Values;
+import org.colonelkai.application.Values;
 import org.colonelkai.os.OperatingSystems;
 
 import java.io.*;

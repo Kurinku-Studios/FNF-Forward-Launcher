@@ -13,6 +13,7 @@ import javafx.scene.text.FontPosture;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.colonelkai.ForwardLauncher;
+import org.colonelkai.application.Values;
 import org.colonelkai.mod.Mod;
 import org.colonelkai.mod.Mods;
 import org.colonelkai.mod.network.DownloadContext;
@@ -98,6 +99,9 @@ public class LoadingStageHandler {
         primaryStage.centerOnScreen();
 
         // Do loading stuff here
+
+        loadingText.setText("Loading Settings...");
+        Values.settings.loadFromFile();
 
         loadingText.setText("Updating Local Data Repository...");
 
