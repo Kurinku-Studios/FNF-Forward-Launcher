@@ -2,45 +2,40 @@ package org.colonelkai.guielements.nodes.settings;
 
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.Labeled;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.colonelkai.ForwardLauncher;
 import org.colonelkai.application.Settings;
-
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
+import org.colonelkai.guielements.nodes.input.NodeInput;
 
 public class SettingBox<T> extends HBox {
-    private final Type type;
-    private final String displayName;
-    private T setting;
-    private PropertyDescriptor propertyDescriptor;
-    private Settings temporarySettings;
 
-    Font font = Font.loadFont(
+    private final NodeInput<Settings, T> inputBox;
+    private final String displayName;
+
+    public static final Font FONT = Font.loadFont(
             ForwardLauncher.class.getResourceAsStream("/fonts/Funkin.otf"), 20);
 
-    public SettingBox(
-            T setting, String displayName, Type type, PropertyDescriptor propertyDescriptor, Settings temporarySettings, VBox vb) throws InvocationTargetException, IllegalAccessException {
-        this.setting = setting;
+    public SettingBox(String displayName, NodeInput<Settings, T> inputBox) {
+        if (!(inputBox instanceof Node)) {
+            throw new RuntimeException("NodeInput must extend Node");
+        }
         this.displayName = displayName;
-        this.type = type;
-        this.propertyDescriptor = propertyDescriptor;
-        this.temporarySettings = temporarySettings;
-
-        this.prefWidthProperty().bind(vb.widthProperty());
-
+        this.inputBox = inputBox;
         this.update();
     }
 
-    public void update() throws InvocationTargetException, IllegalAccessException {
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public NodeInput<Settings, T> getInputBox() {
+        return this.inputBox;
+    }
+
+    public void update() {
         this.getChildren().clear();
 
         // ---- Anchor Panes ----
@@ -52,42 +47,9 @@ public class SettingBox<T> extends HBox {
 
         // ---- LABEL ----
         Label label = new Label(displayName);
-        label.setFont(font);
+        label.setFont(FONT);
         apLeft.getChildren().add(label);
-
-        // ---- BOOLEAN ----
-        if(this.type == boolean.class) {
-            ToggleButton toggleButton = new ToggleButton();
-            toggleButton.setFont(font);
-            boolean curValue = (boolean) propertyDescriptor.getReadMethod().invoke(this.temporarySettings);
-            if(curValue) {
-                toggleButton.setText("On");
-            } else {
-                toggleButton.setText("Off");
-            }
-            toggleButton.setOnAction(actionEvent -> {
-                try {
-                    if(curValue) {
-                        propertyDescriptor.getWriteMethod().invoke(this.temporarySettings, false);
-                    } else {
-                        propertyDescriptor.getWriteMethod().invoke(this.temporarySettings, true);
-                    }
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-                // I don't know if this update call is necessary
-                try {
-                    this.update();
-                } catch (InvocationTargetException | IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            });
-            apRight.getChildren().add(toggleButton);
-
-
-
-        }
-
+        apRight.getChildren().add((Node) this.inputBox);
     }
 
 }
